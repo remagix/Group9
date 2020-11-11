@@ -1,3 +1,6 @@
+import pygame
+import time
+import random
+import os
 
-#nciuznciuz
-#yvan
+redVirusImage = pygame.image.load('coronavirus.png') # ---------------> MODIF DE REMY : BADDIE = CORONA
