@@ -23,10 +23,10 @@ pygame.display.set_caption("Convinvaders : Revenge of The Pangolin")
 
 #Images
 #Charge l'image des virus
-redVirusImage = pygame.image.load('red_virus.png')
-greenVirusImage = pygame.image.load('green_virus.png')
-blueVirusImage = pygame.image.load('blue_virus.png')
-purpleVirusImage = pygame.image.load('purple_virus.png')
+redVirusImage = pygame.image.load('covinv_docs/red_virus.png')
+greenVirusImage = pygame.image.load('covinv_docs/green_virus.png')
+blueVirusImage = pygame.image.load('covinv_docs/blue_virus.png')
+purpleVirusImage = pygame.image.load('covinv_docs/purple_virus.png')
 
 
 #Taille Virus
