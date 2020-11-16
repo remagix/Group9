@@ -1,6 +1,5 @@
 import pygame
 import time
-import Virus
 import Boss
 import Player
 import random
@@ -74,14 +73,20 @@ BatbossImage = pygame.image.load('covinv_docs/pngegg.png')
 #Story_SixBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
 #Story_SevenBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
 
-class virus:
-    def __init__(self, x, y,):
+class Virus(pygame.sprite.Sprite):
+
+    def __init__(self, x, y):
+        pygame.sprite.Sprite.__init__(self)
         self.x = x
         self.y = y
         self.health = None
         self.virus_img = None
+
     def draw(self, window):
-        WINDOW.blit(greenVirusImage,(self.x, self.y))
+        window.blit(greenVirusImage, (self.x, self.y))
+
+    def update(self):
+        pygame.event.pump()
 
 def main():
     run = True
@@ -90,7 +95,7 @@ def main():
     lives = 3
     main_font = pygame.font.SysFont("timesnewroman", 20)
 
-    Virus = virus(300, 500)
+    virus = Virus(300, 500)
 
     clock = pygame.time.Clock()
 
@@ -103,8 +108,7 @@ def main():
         WINDOW.blit(lives_label, (10, 10))
         WINDOW.blit(level_label, (WINDOW_WIDTH - level_label.get_width() - 10, 10))
 
-        Virus.draw(WINDOW)
-
+        virus.draw(WINDOW)
         pygame.display.update()
 
 
@@ -124,11 +128,11 @@ def main():
 
         keys = pygame.key.get_pressed()
         if  keys[pygame.K_LEFT]:
-            Virus.x -= 5
+            virus.x -= 5
         if keys[pygame.K_RIGHT]:
-            Virus.x += 5
+            virus.x += 5
         if keys[pygame.K_UP]:
-            Virus.y -= 5
+            virus.y -= 5
 
 main()
 
