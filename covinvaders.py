@@ -32,7 +32,7 @@ purpleVirusImage = pygame.image.load('covinv_docs/purple_virus.png')
 #PlayerImage = pygame.image,load()
 
 #Charge L'image des boss
-#BatbossImage = pygame.image,load()
+BatbossImage = pygame.image,load('covinv_docs/pngegg.png')
 #TrumpbossImage = pygame.image,load()
 #PangolinbossImage = pygame.image,load()
 
@@ -67,6 +67,29 @@ purpleVirusImage = pygame.image.load('covinv_docs/purple_virus.png')
 #Story_FiveBGImage = pygame.image,load()
 #Story_SixBGImage = pygame.image,load()
 #Story_SevenBGImage = pygame.image,load()
+
+def main():
+    run = True
+    FPS = 60
+    clock = pygame.time.Clock()
+
+    def redraw_window():
+        #WINDOW.blit(BG)
+
+        pygame.display.update()
+
+
+    while run:
+        clock.tick(FPS)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    if event.key == K_ESCAPE:
+                        run = False
+main()
 
 
 
