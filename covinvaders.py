@@ -35,7 +35,8 @@ test = redVirusImage.get_rect()
 #PlayerImage = pygame.image,load()
 
 #Charge L'image des boss
-BatbossImage = pygame.image.load('covinv_docs/pngegg.png')
+BatbossImage= pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
+#BatbossImage = pygame.image.load('covinv_docs/pngegg.png')
 #TrumpbossImage = pygame.image,load()
 #PangolinbossImage = pygame.image,load()
 
@@ -55,7 +56,7 @@ BatbossImage = pygame.image.load('covinv_docs/pngegg.png')
 
 #Charge L'image de l'arrière plan
 
-#StartBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
+StartBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/phototest.jpg')),(WINDOW_WIDTH,WINDOW_HEIGHT))
 #MenuBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
 #PauseBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
 #EndBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
@@ -73,20 +74,21 @@ BatbossImage = pygame.image.load('covinv_docs/pngegg.png')
 #Story_SixBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
 #Story_SevenBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
 
-class Virus(pygame.sprite.Sprite):
-
+class virus:
     def __init__(self, x, y):
-        pygame.sprite.Sprite.__init__(self)
         self.x = x
         self.y = y
         self.health = None
-        self.virus_img = None
-
+        self.virus_img = redVirusImage
     def draw(self, window):
-        window.blit(greenVirusImage, (self.x, self.y))
+        WINDOW.blit(greenVirusImage,(self.x, self.y))
 
     def update(self):
         pygame.event.pump()
+#class Player(virus):
+    #def __init__(self,x ,y):
+        #super().__init__(x,y,)
+        #self.virus_img = redVirusImage
 
 def main():
     run = True
@@ -95,12 +97,13 @@ def main():
     lives = 3
     main_font = pygame.font.SysFont("timesnewroman", 20)
 
-    virus = Virus(300, 500)
+    Virus = virus(300, 500)
 
     clock = pygame.time.Clock()
 
     def redraw_window():
-        WINDOW.blit(BatbossImage, (0,0))
+        WINDOW.blit(StartBGImage, (0,0))
+        WINDOW.blit(BatbossImage, (150,0))
         #draw text
         lives_label = main_font.render(f"Lives: {lives}", 1, (255, 0, 255))
         level_label = main_font.render(f"Level: {level}", 1, (255, 255, 255))
@@ -108,31 +111,30 @@ def main():
         WINDOW.blit(lives_label, (10, 10))
         WINDOW.blit(level_label, (WINDOW_WIDTH - level_label.get_width() - 10, 10))
 
-        virus.draw(WINDOW)
+        Virus.draw(WINDOW)
+
         pygame.display.update()
-
-
     while run:
         clock.tick(FPS)
         redraw_window()
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
-                    if event.key == K_ESCAPE:
-                        run = False
+                    run = False
 
 
 
         keys = pygame.key.get_pressed()
         if  keys[pygame.K_LEFT]:
-            virus.x -= 5
+            Virus.x -= 5
         if keys[pygame.K_RIGHT]:
-            virus.x += 5
+            Virus.x += 5
         if keys[pygame.K_UP]:
-            virus.y -= 5
+            Virus.y -= 5
+        if keys[pygame.K_DOWN]:
+            Virus.y += 5
 
 main()
 
