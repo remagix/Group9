@@ -18,6 +18,16 @@ from pygame.locals import *
 #Taille fenetre
 WINDOW_HEIGHT = 600
 WINDOW_WIDTH = 600
+WINDOW = pygame.display.set_mode((WINDOW_HEIGHT, WINDOW_WIDTH))
+pygame.display.set_caption("Convinvaders : Revenge of The Pangolin")
+
+#Images
+#Charge l'image des virus
+redVirusImage = pygame.image.load('red_virus.png')
+greenVirusImage = pygame.image.load('green_virus.png')
+blueVirusImage = pygame.image.load('blue_virus.png')
+purpleVirusImage = pygame.image.load('purple_virus.png')
+
 
 #Taille Virus
 RED_VIRUS_SIZE = 20
@@ -26,8 +36,7 @@ PURPLE_VIRUS_SIZE = 40
 BLUE_VIRUS_SIZE = 50 #frozen
 
 
-#Charge l'image des virus
-redVirusImage = pygame.image.load('covinv_docs/red_virus.png') # ---------------> MODIF DE REMY : CHARGE CORONA IMAGE
+
 
 #Rect(left, top, width, height) -> Rect
 redVirRect = pygame.Rect(random.randint(0, WINDOW_WIDTH - RED_VIRUS_SIZE), 0 - RED_VIRUS_SIZE, RED_VIRUS_SIZE, RED_VIRUS_SIZE)
