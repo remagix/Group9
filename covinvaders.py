@@ -28,6 +28,47 @@ greenVirusImage = pygame.image.load('covinv_docs/green_virus.png')
 blueVirusImage = pygame.image.load('covinv_docs/blue_virus.png')
 purpleVirusImage = pygame.image.load('covinv_docs/purple_virus.png')
 
+#charge l'image du joueur
+#PlayerImage = pygame.image,load()
+
+#Charge L'image des boss
+#BatbossImage = pygame.image,load()
+#TrumpbossImage = pygame.image,load()
+#PangolinbossImage = pygame.image,load()
+
+#Charge L'image des objets
+#MaskImage = pygame.image,load()
+#VaccineImage = pygame.image,load()
+#AmmoImage = pygame.image,load()
+#Trav_CertImage = pygame.image,load()
+
+#Charge L'image des tirs
+#PlayermissileImage = pygame.image,load()
+#BatmissileImage = pygame.image,load()
+#TrumpmissileImage = pygame.image,load()
+#PangolinmissileImage = pygame.image,load()
+
+#Charge L'image de l'arrière plan
+
+#StartBGImage = pygame.image,load()
+#MenuBGImage = pygame.image,load()
+#PauseBGImage = pygame.image,load()
+#EndBGImage = pygame.image,load()
+#Wave_OneBGImage = pygame.image,load()
+#Wave_TwoBGImage = pygame.image,load()
+#Wave_ThreeBGImage = pygame.image,load()
+#Boss_OneBGImage = pygame.image,load()
+#Boss_TWOBGImage = pygame.image,load()
+#Boss_ThreeBGImage = pygame.image,load()
+#Story_OneBGImage = pygame.image,load()
+#Story_TwoBGImage = pygame.image,load()
+#Story_ThreeBGImage = pygame.image,load()
+#Story_FourBGImage = pygame.image,load()
+#Story_FiveBGImage = pygame.image,load()
+#Story_SixBGImage = pygame.image,load()
+#Story_SevenBGImage = pygame.image,load()
+
+
 
 #Taille Virus
 RED_VIRUS_SIZE = 20
