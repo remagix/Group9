@@ -7,7 +7,7 @@ import random
 import os
 import pygame, random, sys
 from pygame.locals import *
-
+pygame.font.init()
 
 
 # POUR CHAQUE NIVEAU/BOSS, ON FAIT UNE CLASSE ABSTRAITE NOMMEE GAMESCREEN, ET 2 SOUS CLASSES BOSS_SCREEN ET VIRUS_SCREEN
@@ -71,13 +71,36 @@ BatbossImage = pygame.image.load('covinv_docs/pngegg.png')
 #Story_SixBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
 #Story_SevenBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
 
+class virus:
+    def __init__(self, x, y,):
+        self.x = x
+        self.y = y
+        self.health = None
+        self.virus_img = None
+    def draw(self, window):
+        WINDOW.blit(redVirusImage,(self.x, self.y,))
+
 def main():
     run = True
     FPS = 60
+    level = 1
+    lives = 3
+    main_font = pygame.font.SysFont("timesnewroman", 20)
+
+    Virus = virus(300, 500)
+
     clock = pygame.time.Clock()
 
     def redraw_window():
         WINDOW.blit(BatbossImage, (0,0))
+        #draw text
+        lives_label = main_font.render(f"Lives: {lives}", 1, (255, 0, 255))
+        level_label = main_font.render(f"Level: {level}", 1, (255, 255, 255))
+
+        WINDOW.blit(lives_label, (10, 10))
+        WINDOW.blit(level_label, (WINDOW_WIDTH - level_label.get_width() - 10, 10))
+
+        Virus.draw(WINDOW)
 
         pygame.display.update()
 
@@ -93,6 +116,15 @@ def main():
                 if event.key == K_ESCAPE:
                     if event.key == K_ESCAPE:
                         run = False
+
+
+
+        keys = pygame.key.get_pressed()
+        if  keys[pygame.K_LEFT]:
+            Virus.x -= 5
+        if keys[pygame.K_RIGHT]:
+            Virus.x += 5
+
 main()
 
 
