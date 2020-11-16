@@ -23,10 +23,13 @@ pygame.display.set_caption("Convinvaders : Revenge of The Pangolin")
 
 #Images
 #Charge l'image des virus
-redVirusImage = pygame.image.load('covinv_docs/red_virus.png')
-greenVirusImage = pygame.image.load('covinv_docs/green_virus.png')
+redVirusImage = pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/red_virus.png')),(50,50))
+greenVirusImage = pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/green_virus.png')),(50,50))
 blueVirusImage = pygame.image.load('covinv_docs/blue_virus.png')
 purpleVirusImage = pygame.image.load('covinv_docs/purple_virus.png')
+#test
+test = redVirusImage.get_rect()
+
 
 #charge l'image du joueur
 
@@ -78,7 +81,7 @@ class virus:
         self.health = None
         self.virus_img = None
     def draw(self, window):
-        WINDOW.blit(redVirusImage,(self.x, self.y,))
+        WINDOW.blit(greenVirusImage,(self.x, self.y))
 
 def main():
     run = True
@@ -124,6 +127,8 @@ def main():
             Virus.x -= 5
         if keys[pygame.K_RIGHT]:
             Virus.x += 5
+        if keys[pygame.K_UP]:
+            Virus.y -= 5
 
 main()
 
