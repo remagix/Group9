@@ -29,20 +29,23 @@ blueVirusImage = pygame.image.load('covinv_docs/blue_virus.png')
 purpleVirusImage = pygame.image.load('covinv_docs/purple_virus.png')
 
 #charge l'image du joueur
+
 #PlayerImage = pygame.image,load()
 
 #Charge L'image des boss
-BatbossImage = pygame.image,load('covinv_docs/pngegg.png')
+BatbossImage = pygame.image.load('covinv_docs/pngegg.png')
 #TrumpbossImage = pygame.image,load()
 #PangolinbossImage = pygame.image,load()
 
 #Charge L'image des objets
+
 #MaskImage = pygame.image,load()
 #VaccineImage = pygame.image,load()
 #AmmoImage = pygame.image,load()
 #Trav_CertImage = pygame.image,load()
 
 #Charge L'image des tirs
+
 #PlayermissileImage = pygame.image,load()
 #BatmissileImage = pygame.image,load()
 #TrumpmissileImage = pygame.image,load()
@@ -50,23 +53,23 @@ BatbossImage = pygame.image,load('covinv_docs/pngegg.png')
 
 #Charge L'image de l'arrière plan
 
-#StartBGImage = pygame.image,load()
-#MenuBGImage = pygame.image,load()
-#PauseBGImage = pygame.image,load()
-#EndBGImage = pygame.image,load()
-#Wave_OneBGImage = pygame.image,load()
-#Wave_TwoBGImage = pygame.image,load()
-#Wave_ThreeBGImage = pygame.image,load()
-#Boss_OneBGImage = pygame.image,load()
-#Boss_TWOBGImage = pygame.image,load()
-#Boss_ThreeBGImage = pygame.image,load()
-#Story_OneBGImage = pygame.image,load()
-#Story_TwoBGImage = pygame.image,load()
-#Story_ThreeBGImage = pygame.image,load()
-#Story_FourBGImage = pygame.image,load()
-#Story_FiveBGImage = pygame.image,load()
-#Story_SixBGImage = pygame.image,load()
-#Story_SevenBGImage = pygame.image,load()
+#StartBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
+#MenuBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
+#PauseBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
+#EndBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
+#Wave_OneBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
+#Wave_TwoBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
+#Wave_ThreeBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
+#Boss_OneBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
+#Boss_TWOBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
+#Boss_ThreeBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
+#Story_OneBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
+#Story_TwoBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
+#Story_ThreeBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
+#Story_FourBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
+#Story_FiveBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
+#Story_SixBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
+#Story_SevenBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
 
 def main():
     run = True
@@ -74,13 +77,14 @@ def main():
     clock = pygame.time.Clock()
 
     def redraw_window():
-        #WINDOW.blit(BG)
+        WINDOW.blit(BatbossImage, (0,0))
 
         pygame.display.update()
 
 
     while run:
         clock.tick(FPS)
+        redraw_window()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
