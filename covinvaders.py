@@ -74,7 +74,7 @@ StartBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_do
 #Story_SixBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
 #Story_SevenBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
 
-class virus:
+class Virus:
     def __init__(self, x, y):
         self.x = x
         self.y = y
@@ -97,7 +97,7 @@ def main():
     lives = 3
     main_font = pygame.font.SysFont("timesnewroman", 20)
 
-    Virus = virus(300, 500)
+    virus = Virus(300, 500)
 
     clock = pygame.time.Clock()
 
@@ -111,7 +111,7 @@ def main():
         WINDOW.blit(lives_label, (10, 10))
         WINDOW.blit(level_label, (WINDOW_WIDTH - level_label.get_width() - 10, 10))
 
-        Virus.draw(WINDOW)
+        virus.draw(WINDOW)
 
         pygame.display.update()
     while run:
@@ -127,14 +127,14 @@ def main():
 
 
         keys = pygame.key.get_pressed()
-        if  keys[pygame.K_LEFT]:
-            Virus.x -= 5
-        if keys[pygame.K_RIGHT]:
-            Virus.x += 5
-        if keys[pygame.K_UP]:
-            Virus.y -= 5
-        if keys[pygame.K_DOWN]:
-            Virus.y += 5
+        if  keys[pygame.K_LEFT] and virus.x - 5 > 0:
+            virus.x -= 5
+        if keys[pygame.K_RIGHT] and virus.x + 5 + virus.virus_img.get_width() < WINDOW_WIDTH:
+            virus.x += 5
+        if keys[pygame.K_UP] and virus.y - 5 > 0:
+            virus.y -= 5
+        if keys[pygame.K_DOWN] and virus.y + 5 + virus.virus_img.get_height() < WINDOW_HEIGHT:
+            virus.y += 5
 
 main()
 
