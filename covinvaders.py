@@ -22,10 +22,10 @@ pygame.display.set_caption("Convinvaders : Revenge of The Pangolin")
 
 #Images
 #Charge l'image des virus
-redVirusImage = pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/red_virus.png')),(50,50))
+redVirusImage = pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/red_virus.png')),(40,40))
 greenVirusImage = pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/green_virus.png')),(50,50))
-blueVirusImage = pygame.image.load('covinv_docs/blue_virus.png')
-purpleVirusImage = pygame.image.load('covinv_docs/purple_virus.png')
+blueVirusImage = pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/blue_virus.png')),(60,60))
+purpleVirusImage = pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/purple_virus.png')),(70,70))
 #test
 test = redVirusImage.get_rect()
 
@@ -35,8 +35,7 @@ test = redVirusImage.get_rect()
 #PlayerImage = pygame.image,load()
 
 #Charge L'image des boss
-BatbossImage= pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
-#BatbossImage = pygame.image.load('covinv_docs/pngegg.png')
+BatbossImage = pygame.image.load('covinv_docs/pngegg.png')
 #TrumpbossImage = pygame.image,load()
 #PangolinbossImage = pygame.image,load()
 
@@ -79,25 +78,42 @@ class virus:
         self.x = x
         self.y = y
         self.health = None
-        self.virus_img = redVirusImage
+        self.virus_img = None
     def draw(self, window):
-        WINDOW.blit(greenVirusImage,(self.x, self.y))
-
+        WINDOW.blit(self.virus_img,(self.x, self.y))
     def update(self):
         pygame.event.pump()
-#class Player(virus):
-    #def __init__(self,x ,y):
-        #super().__init__(x,y,)
-        #self.virus_img = redVirusImage
 
+class character(virus):
+    def __init__(self,x ,y):
+        super().__init__(x,y)
+        self.virus_img = redVirusImage
+        self.laser_img = None
+
+class colorvirus(virus):
+    Virus_MAP = {
+                "red" : (redVirusImage),
+                "green" : (greenVirusImage ),
+                "blue" : (blueVirusImage ),
+                "purple" : (purpleVirusImage)
+                }
+
+    def __init__(self,x ,y, color):
+        super().__init__(x,y)
+        self.virus_img = self.Virus_MAP[color]
+    def move(self, vel):
+        self.y += vel
 def main():
     run = True
     FPS = 60
     level = 1
     lives = 3
     main_font = pygame.font.SysFont("timesnewroman", 20)
+    enemies = []
+    wave_length = 30
+    virus_vel = 4
 
-    Virus = virus(300, 500)
+    Character = character(300, 500)
 
     clock = pygame.time.Clock()
 
@@ -111,12 +127,20 @@ def main():
         WINDOW.blit(lives_label, (10, 10))
         WINDOW.blit(level_label, (WINDOW_WIDTH - level_label.get_width() - 10, 10))
 
-        Virus.draw(WINDOW)
+        for enemy in enemies:
+            enemy.draw(WINDOW)
+
+        Character.draw(WINDOW)
+
+
 
         pygame.display.update()
     while run:
         clock.tick(FPS)
-        redraw_window()
+        if len(enemies) == 0:
+            for i in range(wave_length):
+                enemy = colorvirus(random.randrange(50, WINDOW_WIDTH-100), random.randrange(-1000,-100), random.choice(["red", "blue", "green", "purple"]))
+                enemies.append(enemy)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
@@ -128,14 +152,17 @@ def main():
 
         keys = pygame.key.get_pressed()
         if  keys[pygame.K_LEFT]:
-            Virus.x -= 5
+            Character.x -= 5
         if keys[pygame.K_RIGHT]:
-            Virus.x += 5
+            Character.x += 5
         if keys[pygame.K_UP]:
-            Virus.y -= 5
+            Character.y -= 5
         if keys[pygame.K_DOWN]:
-            Virus.y += 5
+            Character.y += 5
 
+        for enemy in enemies:
+            enemy.move(virus_vel)
+        redraw_window()
 main()
 
 
