@@ -199,7 +199,7 @@ def main():
   run = True
   FPS = 60
   level = 1
-  lives = 100
+  lives = 50
   main_font = pygame.font.SysFont("timesnewroman", 20)
   lost_font = pygame.font.SysFont("timesnewroman", 30, bold=True)
   enemies = []
