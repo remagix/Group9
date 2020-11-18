@@ -46,7 +46,11 @@ HP_PURPLE = 5
 #PlayerImage = pygame.image,load()
 
 #Charge L'image des boss
-BatbossImage= pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
+# Charge L'image des boss
+# BatbossImage= pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(100,100))
+BatbossImage = pygame.image.load('covinv_docs/pngegg.png')
+# TrumpbossImage = pygame.image,load()
+# PangolinbossImage = pygame.image,load()
 
 
 #Charge L'image des objets
@@ -176,10 +180,10 @@ class Colorvirus(Virus):
                 "purple" : HP_PURPLE
                 }
 
-  def __init__(self, x, y, color):
+  def __init__(self, x, y, color, hp):
       super().__init__(x, y)
       self.virus_img = self.Virus_MAP[color]
-      self.health = self.Health_Map[color]
+      self.health = self.Health_Map[hp]
 
   def move(self, vel):
       self.y += vel
@@ -262,8 +266,11 @@ def main():
           lost = True
           stop()
       if len(enemies) == 0:
+          wave += 1
+          wave_length += 5
           for i in range(wave_length):
-              enemy = Colorvirus(random.randrange(50, WINDOW_WIDTH-100), random.randrange(-1200, -300), random.choice(["red", "blue", "green", "purple"]))
+              Rand_virus = random.choice(["red", "blue", "green", "purple"])
+              enemy = Colorvirus(random.randrange(50, WINDOW_WIDTH-100), random.randrange(-1200, -300), Rand_virus, Rand_virus)
               enemies.append(enemy)
       for event in pygame.event.get():
           if event.type == pygame.QUIT:
@@ -278,7 +285,7 @@ def main():
           character.x -= 5
       if keys[pygame.K_RIGHT] and character.x + 5 + character.character_img.get_width() < WINDOW_WIDTH:
           character.x += 5
-      if keys[pygame.K_UP] and character.y - 5 > 0:
+      if keys[pygame.K_UP] and character.y - 5 > 450:
           character.y -= 5
       if keys[pygame.K_DOWN] and character.y + 5 + character.character_img.get_height() < WINDOW_HEIGHT:
           character.y += 5
@@ -291,38 +298,3 @@ def main():
       character.move_bullets(-shoot_vel, enemies)
       redraw_window()
 main()
-
-
-
-
-
-
-
-
-
-#CHAUVE SOURIS
-BatBossImage = pygame.image.load('covinv_docs/pngegg.png')
-BatBossRect = BatBossImage.get_rect()
-BatBossRect.topleft = (WINDOW_WIDTH-500, WINDOW_HEIGHT-600)
-
-
-# lance pygame, ouvre la fenetre de jeu et active le curseur de la souris
-pygame.init()
-mainClock = pygame.time.Clock()
-windowSurface = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
-pygame.display.set_caption('Dodger')
-pygame.mouse.set_visible(False) #curseur souris visible, mais je sais pas si on en a besoin
-
-def terminate():
-    pygame.quit()
-    sys.exit()
-
-def waitForPlayerToPressKey():
-    while True:
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                terminate()
-            if event.type == KEYDOWN:
-                if event.key == K_ESCAPE: # Pressing ESC quits.
-                    terminate()
-                return
