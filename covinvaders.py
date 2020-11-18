@@ -38,8 +38,8 @@ test = redVirusImage.get_rect()
 #PlayerImage = pygame.image,load()
 
 #Charge L'image des boss
-BatbossImage= pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
-#BatbossImage = pygame.image.load('covinv_docs/pngegg.png')
+
+BatbossImage = pygame.image.load('covinv_docs/pngegg.png')
 #TrumpbossImage = pygame.image,load()
 #PangolinbossImage = pygame.image,load()
 
@@ -48,7 +48,8 @@ BatbossImage= pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs
 #MaskImage = pygame.image,load()
 #VaccineImage = pygame.image,load()
 #AmmoImage = pygame.image,load()
-#Trav_CertImage = pygame.image,load()
+Trav_CertImage = pygame.transform.scale(pygame.image.load(os.path.join('cherry.png')),(50,50))
+FreezingImage = pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/freezing.png')),(40,40))
 
 #Charge L'image des tirs
 
@@ -88,12 +89,6 @@ class Virus:
   def update(self):
       pygame.event.pump()
 
-class Character(Virus):
-  def __init__(self,x ,y):
-      super().__init__(x,y)
-      self.virus_img = redVirusImage
-      self.laser_img = None
-
 class Colorvirus(Virus):
   Virus_MAP = {
               "red" : (redVirusImage),
@@ -107,15 +102,43 @@ class Colorvirus(Virus):
       self.virus_img = self.Virus_MAP[color]
   def move(self, vel):
       self.y += vel
+class Items(Virus):
+    Items_MAP = {
+        "mask": (redVirusImage),
+        "vaccine": (greenVirusImage),
+        "ammo": (blueVirusImage),
+        "trav_cert": (Trav_CertImage),
+        "freezing": (FreezingImage)
+    }
+
+    def __init__(self, x, y, item):
+        super().__init__(x, y)
+        self.virus_img = self.Virus_MAP[color]
+class Character:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.health = None
+        self.character_img = redVirusImage
+        self.shoot_img = None
+
+    def draw(self, window):
+        WINDOW.blit(self.character_img, (self.x, self.y))
+
+    def update(self):
+        pygame.event.pump()
+
+
 def main():
   run = True
   FPS = 60
   level = 1
   lives = 10
+  wave = 0
   main_font = pygame.font.SysFont("timesnewroman", 20)
-  lost_font = pygame.font.SysFont("timesnewroman", 30)
+  lost_font = pygame.font.SysFont("timesnewroman", 30, bold = True)
   enemies = []
-  wave_length = 30
+  wave_length = 10
   virus_vel = 4
 
   character = Character(300, 500)
@@ -130,10 +153,12 @@ def main():
       #draw text
       lives_label = main_font.render(f"Lives: {lives}", 1, (255, 0, 255))
       level_label = main_font.render(f"Level: {level}", 1, (255, 255, 255))
+      wave_label = main_font.render(f"Wave: {wave}", 1, (255, 255, 255))
 
 
       WINDOW.blit(lives_label, (10, 10))
       WINDOW.blit(level_label, (WINDOW_WIDTH - level_label.get_width() - 10, 10))
+      WINDOW.blit(wave_label, (WINDOW_WIDTH/2 - wave_label.get_width()/2 ,10))
 
       for enemy in enemies:
           enemy.draw(WINDOW)
@@ -141,10 +166,10 @@ def main():
       character.draw(WINDOW)
 
       if lost == True:
-          lost_label = lost_font.render("You have been infected", 1 ,(0,255,0))
-          lost_label2 = lost_font.render("You lost", 1, (0, 255, 0))
+          lost_label = lost_font.render("You have been infected", 1 ,(0,66,18))
+          lost_label2 = lost_font.render("You lost", 1, (0, 66, 18))
           WINDOW.blit(lost_label, (WINDOW_WIDTH/2 - lost_label.get_width()/2, 300))
-          WINDOW.blit(lost_label2, (WINDOW_WIDTH / 2 - lost_label.get_width() / 2, 340))
+          WINDOW.blit(lost_label2, (WINDOW_WIDTH / 2 - lost_label2.get_width() / 2, 340))
 
       pygame.display.update()
   pygame.mixer.music.play(-1, 0, 0)
@@ -154,8 +179,10 @@ def main():
       if lives <= 0:
           lost = True
       if len(enemies) == 0:
+          wave += 1
+          wave_length += 5
           for i in range(wave_length):
-              enemy = Colorvirus(random.randrange(50, WINDOW_WIDTH-100), random.randrange(-1000,-100), random.choice(["red", "blue", "green", "purple"]))
+              enemy = Colorvirus(random.randrange(50, WINDOW_WIDTH-100), random.randrange(-1200,-300), random.choice(["red", "blue", "green", "purple"]))
               enemies.append(enemy)
       for event in pygame.event.get():
           if event.type == pygame.QUIT:
@@ -169,11 +196,11 @@ def main():
       keys = pygame.key.get_pressed()
       if keys[pygame.K_LEFT] and character.x - 5 > 0:
           character.x -= 5
-      if keys[pygame.K_RIGHT] and character.x + 5 + character.virus_img.get_width() < WINDOW_WIDTH:
+      if keys[pygame.K_RIGHT] and character.x + 5 + character.character_img.get_width() < WINDOW_WIDTH:
           character.x += 5
-      if keys[pygame.K_UP] and character.y - 5 > 0:
+      if keys[pygame.K_UP] and character.y - 5 > 450:
           character.y -= 5
-      if keys[pygame.K_DOWN] and character.y + 5 + character.virus_img.get_height() < WINDOW_HEIGHT:
+      if keys[pygame.K_DOWN] and character.y + 5 + character.character_img.get_height() < WINDOW_HEIGHT:
           character.y += 5
 
       for enemy in enemies[:]:
@@ -183,45 +210,3 @@ def main():
               enemies.remove(enemy)
       redraw_window()
 main()
-
-
-
-
-#Taille Virus
-RED_VIRUS_SIZE = 20
-GREEN_VIRUS_SIZE = 30
-PURPLE_VIRUS_SIZE = 40
-BLUE_VIRUS_SIZE = 50 #frozen
-
-
-
-
-#Rect(left, top, width, height) -> Rect
-redVirRect = pygame.Rect(random.randint(0, WINDOW_WIDTH - RED_VIRUS_SIZE), 0 - RED_VIRUS_SIZE, RED_VIRUS_SIZE, RED_VIRUS_SIZE)
-
-#CHAUVE SOURIS
-BatBossImage = pygame.image.load('covinv_docs/pngegg.png')
-BatBossRect = BatBossImage.get_rect()
-BatBossRect.topleft = (WINDOW_WIDTH-500, WINDOW_HEIGHT-600)
-
-
-# lance pygame, ouvre la fenetre de jeu et active le curseur de la souris
-pygame.init()
-mainClock = pygame.time.Clock()
-windowSurface = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
-pygame.display.set_caption('Dodger')
-pygame.mouse.set_visible(False) #curseur souris visible, mais je sais pas si on en a besoin
-
-def terminate():
-    pygame.quit()
-    sys.exit()
-
-def waitForPlayerToPressKey():
-    while True:
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                terminate()
-            if event.type == KEYDOWN:
-                if event.key == K_ESCAPE: # Pressing ESC quits.
-                    terminate()
-                return
