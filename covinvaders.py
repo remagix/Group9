@@ -51,10 +51,10 @@ BatbossImage= pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs
 
 #Charge L'image des objets
 
-#MaskImage = pygame.image,load()
-#VaccineImage = pygame.image,load()
-#AmmoImage = pygame.image,load()
-travCertImage = pygame.transform.scale(pygame.image.load('cherry.png'), (50, 50))
+maskImage = pygame.transform.scale(pygame.image.load('covinv_docs/medical-mask.png'))
+vaccineImage = pygame.transform.scale(pygame.image.load('covinv_docs/syringe.png'))
+bonusAmmoImage = pygame.transform.scale(pygame.image.load('covinv_docs/ammo.png'))
+travCertImage = pygame.transform.scale(pygame.image.load('covinv_docs/certification.png'), (50, 50))
 freezingImage = pygame.transform.scale(pygame.image.load('covinv_docs/freezing.png'), (40, 40))
 
 #Charge L'image des tirs
@@ -187,9 +187,9 @@ class Colorvirus(Virus):
 
 class Items(Virus):
     Items_MAP = {
-        "mask": redVirusImage,
-        "vaccine": greenVirusImage,
-        "ammo": blueVirusImage,
+        "mask": maskImage,
+        "vaccine": vaccineImage,
+        "ammo": bonusAmmoImage,
         "trav_cert": travCertImage,
         "freeze" : freezingImage
     }
@@ -249,14 +249,12 @@ def main():
 
       character.draw(WINDOW)
 
-
-
       pygame.display.update()
   pygame.mixer.music.play(-1, 0, 0)
 
-  i = 0
+  cooldown = 0
   while run:
-      i+=1
+      cooldown += 1
       clock.tick(FPS)
       if lives <= 0:
           lost = True
@@ -271,7 +269,7 @@ def main():
           if event.type == KEYDOWN:
               if event.key == K_ESCAPE:
                   run = False
-      if i%20 == 0:
+      if cooldown % 20 == 0:
           character.shoot()
       keys = pygame.key.get_pressed()
       if keys[pygame.K_LEFT] and character.x - 5 > 0:
