@@ -15,7 +15,7 @@ pygame.mixer.init()
 # ON AURAIT JUSTE A CHANGER LA PHOTO DE FOND, LE TYPE DENNEMI, ET LIMAGE DU BOSS, ET UNE CLASSE PR LES ECRANS AVEC TEXT
 # PAS OUBLIER DY METTRE LES BONUS ET LES BPNUS SPECIFIQUES AUX ECRANS VIRUS ET CEUX SPECIFIQUES AU NIVEAUX BOSS
 
-pygame.mixer.music.load('covinv_docs/Magic System- Premier Gaou.mp3.mid')
+pygame.mixer.music.load('covinv_docs/Magic System- Premier Gaou.mp3')
 
 #Taille fenetre
 WINDOW_HEIGHT = 600
@@ -88,22 +88,30 @@ class Virus:
   def update(self):
       pygame.event.pump()
 
-class Character(Virus):
-  def __init__(self,x ,y):
-      super().__init__(x,y)
-      self.virus_img = redVirusImage
-      self.laser_img = None
+class Character:
+  def __init__(self, x, y):
+      self.x = x
+      self.y = y
+      self.health = None
+      self.character_img = redVirusImage
+      self.shoot_img = None
+
+  def draw(self, window):
+      WINDOW.blit(self.character_img,(self.x, self.y))
+
+  def update(self):
+      pygame.event.pump()
 
 class Colorvirus(Virus):
   Virus_MAP = {
               "red" : (redVirusImage),
-              "green" : (greenVirusImage ),
-              "blue" : (blueVirusImage ),
+              "green" : (greenVirusImage),
+              "blue" : (blueVirusImage),
               "purple" : (purpleVirusImage)
               }
 
-  def __init__(self,x ,y, color):
-      super().__init__(x,y)
+  def __init__(self, x, y, color):
+      super().__init__(x, y)
       self.virus_img = self.Virus_MAP[color]
   def move(self, vel):
       self.y += vel
@@ -111,7 +119,7 @@ def main():
   run = True
   FPS = 60
   level = 1
-  lives = 10
+  lives = 100
   main_font = pygame.font.SysFont("timesnewroman", 20)
   lost_font = pygame.font.SysFont("timesnewroman", 30)
   enemies = []
@@ -122,6 +130,21 @@ def main():
 
   clock = pygame.time.Clock()
   lost = False
+
+  def stop():
+      lost_label = lost_font.render("You have been infected", 1, (0, 255, 0))
+      lost_label2 = lost_font.render("You lost", 1, (0, 255, 0))
+      WINDOW.blit(lost_label, (WINDOW_WIDTH / 2 - lost_label.get_width() / 2, 300))
+      WINDOW.blit(lost_label2, (WINDOW_WIDTH / 2 - lost_label.get_width() / 2, 340))
+      while lost_stop:
+          for event in pygame.event.get():
+
+              if event.type == pygame.QUIT:
+                  pygame.quit()
+                  quit()
+
+          pygame.display.update()
+          clock.tick(15)
 
   def redraw_window():
       WINDOW.blit(StartBGImage, (0,0))
@@ -140,7 +163,7 @@ def main():
 
       character.draw(WINDOW)
 
-      if lost == True:
+      if lost:
           lost_label = lost_font.render("You have been infected", 1 ,(0,255,0))
           lost_label2 = lost_font.render("You lost", 1, (0, 255, 0))
           WINDOW.blit(lost_label, (WINDOW_WIDTH/2 - lost_label.get_width()/2, 300))
@@ -153,9 +176,11 @@ def main():
       clock.tick(FPS)
       if lives <= 0:
           lost = True
+          lost_stop = True
+          stop()
       if len(enemies) == 0:
           for i in range(wave_length):
-              enemy = Colorvirus(random.randrange(50, WINDOW_WIDTH-100), random.randrange(-1000,-100), random.choice(["red", "blue", "green", "purple"]))
+              enemy = Colorvirus(random.randrange(50, WINDOW_WIDTH-100), random.randrange(-1000, -100), random.choice(["red", "blue", "green", "purple"]))
               enemies.append(enemy)
       for event in pygame.event.get():
           if event.type == pygame.QUIT:
@@ -169,11 +194,11 @@ def main():
       keys = pygame.key.get_pressed()
       if keys[pygame.K_LEFT] and character.x - 5 > 0:
           character.x -= 5
-      if keys[pygame.K_RIGHT] and character.x + 5 + character.virus_img.get_width() < WINDOW_WIDTH:
+      if keys[pygame.K_RIGHT] and character.x + 5 + character.character_img.get_width() < WINDOW_WIDTH:
           character.x += 5
       if keys[pygame.K_UP] and character.y - 5 > 0:
           character.y -= 5
-      if keys[pygame.K_DOWN] and character.y + 5 + character.virus_img.get_height() < WINDOW_HEIGHT:
+      if keys[pygame.K_DOWN] and character.y + 5 + character.character_img.get_height() < WINDOW_HEIGHT:
           character.y += 5
 
       for enemy in enemies[:]:
