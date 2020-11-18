@@ -7,12 +7,15 @@ import os
 import pygame, random, sys
 from pygame.locals import *
 pygame.font.init()
+pygame.mixer.init()
 
 
 # POUR CHAQUE NIVEAU/BOSS, ON FAIT UNE CLASSE ABSTRAITE NOMMEE GAMESCREEN, ET 2 SOUS CLASSES BOSS_SCREEN ET VIRUS_SCREEN
 # POUR MODELISER CHAQUE ECRAN DE JEU SANS REPETER LES DIMENSIONS ET SANS REPETER DU CODE PR RIEN, ET AUSSI
 # ON AURAIT JUSTE A CHANGER LA PHOTO DE FOND, LE TYPE DENNEMI, ET LIMAGE DU BOSS, ET UNE CLASSE PR LES ECRANS AVEC TEXT
 # PAS OUBLIER DY METTRE LES BONUS ET LES BPNUS SPECIFIQUES AUX ECRANS VIRUS ET CEUX SPECIFIQUES AU NIVEAUX BOSS
+
+pygame.mixer.music.load('covinv_docs/Magic System- Premier Gaou.mp3.mid')
 
 #Taille fenetre
 WINDOW_HEIGHT = 600
@@ -143,8 +146,9 @@ def main():
           WINDOW.blit(lost_label, (WINDOW_WIDTH/2 - lost_label.get_width()/2, 300))
           WINDOW.blit(lost_label2, (WINDOW_WIDTH / 2 - lost_label.get_width() / 2, 340))
 
-
       pygame.display.update()
+  pygame.mixer.music.play(-1, 0, 0)
+
   while run:
       clock.tick(FPS)
       if lives <= 0:
