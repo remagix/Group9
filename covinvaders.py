@@ -38,8 +38,8 @@ test = redVirusImage.get_rect()
 #PlayerImage = pygame.image,load()
 
 #Charge L'image des boss
-
-BatbossImage = pygame.image.load('covinv_docs/pngegg.png')
+BatbossImage= pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
+#BatbossImage = pygame.image.load('covinv_docs/pngegg.png')
 #TrumpbossImage = pygame.image,load()
 #PangolinbossImage = pygame.image,load()
 
@@ -146,6 +146,21 @@ def main():
   clock = pygame.time.Clock()
   lost = False
 
+  def stop():
+      lost_label = lost_font.render("You have been infected", 1, (0, 255, 0))
+      lost_label2 = lost_font.render("You lost", 1, (0, 255, 0))
+      WINDOW.blit(lost_label, (WINDOW_WIDTH / 2 - lost_label.get_width() / 2, 300))
+      WINDOW.blit(lost_label2, (WINDOW_WIDTH / 2 - lost_label.get_width() / 2, 340))
+      while lost_stop:
+          for event in pygame.event.get():
+
+              if event.type == pygame.QUIT:
+                  pygame.quit()
+                  quit()
+
+          pygame.display.update()
+          clock.tick(15)
+
   def redraw_window():
       WINDOW.blit(StartBGImage, (0,0))
       WINDOW.blit(BatbossImage, (150,0))
@@ -178,6 +193,8 @@ def main():
       clock.tick(FPS)
       if lives <= 0:
           lost = True
+          lost_stop = True
+          stop()
       if len(enemies) == 0:
           wave += 1
           wave_length += 5
