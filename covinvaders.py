@@ -40,7 +40,7 @@ HP_PURPLE = 5
 
 # charge l'image du joueur
 
-playerImage = pygame.transform.scale(pygame.image.load('covinv_docs/samus.png'), (70, 90))
+heroImage = pygame.transform.scale(pygame.image.load('covinv_docs/samus.png'), (70, 90))
 
 # Charge L'image des boss
 BatbossImage = pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),
@@ -119,19 +119,19 @@ class Bullet:
         return collide(self, obj)
 
 
-class Character:
+class Hero:
 
     def __init__(self, x, y):
         self.x = x
         self.y = y
         self.health = None
-        self.character_img = playerImage
-        self.mask = pygame.mask.from_surface(self.character_img)
+        self.hero_img = heroImage
+        self.mask = pygame.mask.from_surface(self.hero_img)
         self.bullets = []
         self.shoot_img = drop_img
 
     def draw(self, window):
-        WINDOW.blit(self.character_img, (self.x, self.y))
+        WINDOW.blit(self.hero_img, (self.x, self.y))
         for bullet in self.bullets:
             bullet.draw(window)
 
@@ -211,7 +211,7 @@ def main():
     virus_vel = 1
     shoot_vel = 5
 
-    character = Character(300, 500)
+    hero = Hero(300, 500)
 
     clock = pygame.time.Clock()
     lost = False
@@ -250,7 +250,7 @@ def main():
         for enemy in enemies:
             enemy.draw(WINDOW)
 
-        character.draw(WINDOW)
+        hero.draw(WINDOW)
         pygame.display.update()
 
     pygame.mixer.music.play(-1, 0, 0)
@@ -278,17 +278,17 @@ def main():
                 if event.key == K_ESCAPE:
                     run = False
         if cooldown % 20 == 0:
-            character.shoot()
+            hero.shoot()
 
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT] and character.x - 5 > 0:
-            character.x -= 5
-        if keys[pygame.K_RIGHT] and character.x + 5 + character.character_img.get_width() < WINDOW_WIDTH:
-            character.x += 5
-        if keys[pygame.K_UP] and character.y - 5 > 450:
-            character.y -= 5
-        if keys[pygame.K_DOWN] and character.y + 5 + character.character_img.get_height() < WINDOW_HEIGHT:
-            character.y += 5
+        if keys[pygame.K_LEFT] and hero.x - 5 > 0:
+            hero.x -= 5
+        if keys[pygame.K_RIGHT] and hero.x + 5 + hero.hero_img.get_width() < WINDOW_WIDTH:
+            hero.x += 5
+        if keys[pygame.K_UP] and hero.y - 5 > 450:
+            hero.y -= 5
+        if keys[pygame.K_DOWN] and hero.y + 5 + hero.hero_img.get_height() < WINDOW_HEIGHT:
+            hero.y += 5
 
         for enemy in enemies[:]:
             enemy.move(virus_vel)
@@ -296,7 +296,7 @@ def main():
                 lives -= 1
                 enemies.remove(enemy)
 
-        character.move_bullets(-shoot_vel, enemies)
+        hero.move_bullets(-shoot_vel, enemies)
 
         redraw_window()
 
