@@ -43,10 +43,10 @@ HP_PURPLE = 5
 
 #charge l'image du joueur
 
-#PlayerImage = pygame.image,load()
+playerImage = pygame.transform.scale(pygame.image.load('covinv_docs/samus.png'), (50, 50))
 
 #Charge L'image des boss
-BatbossImage= pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
+batbossImage= pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
 
 
 #Charge L'image des objets
@@ -66,7 +66,7 @@ freezingImage = pygame.transform.scale(pygame.image.load('covinv_docs/freezing.p
 
 #Charge L'image de l'arrière plan
 
-StartBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/phototest.jpg')),(WINDOW_WIDTH,WINDOW_HEIGHT))
+startBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/phototest.jpg')),(WINDOW_WIDTH,WINDOW_HEIGHT))
 #MenuBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
 #PauseBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
 #EndBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
@@ -98,16 +98,12 @@ class Virus:
   def update(self):
       pygame.event.pump()
 
-  #def collide(obj1, obj2):
-    #  offset_x = obj2.x - obj1.x
-    #  offset_y = obj2.y - obj1.y
-    #  return obj1.mask.overlap(obj2.mask, (offset_x, offset_y)) != None
 
-  def collide(bull, vir):
-      bullRect = pygame.Rect(bull.x, bull.y, 20, 20)
-      virRect = pygame.Rect(vir.x, vir.y, 50,50)
-      if bullRect.colliderect(virRect):
-          vir.
+  #def collide(bull, vir):
+    #  bullRect = pygame.Rect(bull.x, bull.y, 20, 20)
+    #  virRect = pygame.Rect(vir.x, vir.y, 50,50)
+    #  if bullRect.colliderect(virRect):
+     #     return
 
 
 
@@ -135,12 +131,14 @@ class Bullet:
 
 
 class Character:
+
   def __init__(self, x, y):
       self.x = x
       self.y = y
       self.health = None
-      self.character_img = redVirusImage
+      self.character_img = playerImage
       self.bullets = []
+      self.bulletRects = []
       self.shoot_img = drop_img
 
 
@@ -149,20 +147,31 @@ class Character:
       for bullet in self.bullets:
           bullet.draw(window)
 
+
   def move_bullets(self, vel, obj):
       for bullet in self.bullets:
           bullet.move(vel)
           if bullet.off_screen(WINDOW_HEIGHT):
               self.bullets.remove(bullet)
-          #elif bullet.collision(obj):
-            #  obj.health -= 10
-            #  self.bullets.remove(bullet)
+
+      #for bulletRect in self.bulletRects[:]: COLISION MARCHE PAS !!!!!!!!!!!!!!!!!!!!!!
+        #  i = 0
+       #   bulletRect.y += vel
+       #   if bulletRect.y > WINDOW_HEIGHT:
+       #       self.bullets.remove(bullet)
+       #   elif bulletRect.colliderect(obj):
+       #       i+=1
+       #       self.bulletRects.remove(bulletRect)
+        #      print(i)
+
 
   def update(self):
       pygame.event.pump()
 
   def shoot(self):
-      standard_ammo = Bullet(self.x, self.y, self.shoot_img)
+      standard_ammo = Bullet(self.x + 8, self.y - 20, self.shoot_img)
+      bulletRect = pygame.Rect(standard_ammo.x, standard_ammo.y, 20, 20)
+      self.bulletRects.append(bulletRect)
       self.bullets.append(standard_ammo)
 
 
@@ -183,10 +192,10 @@ class Colorvirus(Virus):
                 "purple" : HP_PURPLE
                 }
 
-  def __init__(self, x, y, color):
+  def __init__(self, x, y, color, hp):
       super().__init__(x, y)
       self.virus_img = self.Virus_MAP[color]
-      self.health = self.Health_Map[color]
+      self.health = self.Health_Map[hp]
 
   def move(self, vel):
       self.y += vel
@@ -240,8 +249,8 @@ def main():
           clock.tick(15)
 
   def redraw_window():
-      WINDOW.blit(StartBGImage, (0,0))
-      WINDOW.blit(BatbossImage, (150,0))
+      WINDOW.blit(startBGImage, (0,0))
+      WINDOW.blit(batbossImage, (150,0))
       pygame.draw.line(WINDOW,(255,0,0), (0,450),(600,450), 3)
       #draw text
       lives_label = main_font.render(f"Lives: {lives}", 1, (255, 0, 255))
@@ -270,11 +279,12 @@ def main():
           wave += 1
           wave_length += 5
           for i in range(wave_length):
-              randVirus = random.choice("red", "green", "blue", "purple")
+              randVirus = random.choice(["red", "green", "blue", "purple"])
               enemy = Colorvirus(random.randrange(50, WINDOW_WIDTH-100), random.randrange(-1200, -300), randVirus, randVirus)
               enemyRect = pygame.Rect(enemy.x, enemy.y, 50, 50)
               enemyRects.append(enemyRect)
               enemies.append(enemy)
+
       for event in pygame.event.get():
           if event.type == pygame.QUIT:
               run = False
@@ -296,21 +306,20 @@ def main():
 
       for enemy in enemies[:]:
           enemy.move(virus_vel)
-          enemyRect.y +=
           if enemy.y + enemy.virus_img.get_height() > WINDOW_HEIGHT - 150:
               lives -= 1
               enemies.remove(enemy)
+
+      for enemyRect in enemyRects[:]:
+          enemyRect.y += virus_vel
+          if enemy.y + enemy.virus_img.get_height() > WINDOW_HEIGHT - 150:
+              enemyRects.remove(enemyRect)
+
+
       character.move_bullets(-shoot_vel, enemies)
 
       redraw_window()
 main()
-
-
-
-
-
-
-
 
 
 #CHAUVE SOURIS
