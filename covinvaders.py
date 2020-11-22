@@ -43,10 +43,10 @@ HP_PURPLE = 5
 
 #charge l'image du joueur
 
-playerImage = pygame.transform.scale(pygame.image.load('covinv_docs/samus.png'), (50, 50))
+playerImage = pygame.transform.scale(pygame.image.load('covinv_docs/samus.png'), (70, 90))
 
 #Charge L'image des boss
-batbossImage= pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
+BatbossImage= pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
 
 
 #Charge L'image des objets
@@ -66,7 +66,7 @@ freezingImage = pygame.transform.scale(pygame.image.load('covinv_docs/freezing.p
 
 #Charge L'image de l'arrière plan
 
-startBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/phototest.jpg')),(WINDOW_WIDTH,WINDOW_HEIGHT))
+StartBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/phototest.jpg')),(WINDOW_WIDTH,WINDOW_HEIGHT))
 #MenuBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
 #PauseBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
 #EndBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
@@ -92,19 +92,11 @@ class Virus:
       self.virus_img = None
 
 
-  def draw(self, window): #WINDOW ou window ?
-      WINDOW.blit(self.virus_img,(self.x, self.y))
+  def draw(self, window):
+      window.blit(self.virus_img,(self.x, self.y))
 
   def update(self):
       pygame.event.pump()
-
-
-  #def collide(bull, vir):
-    #  bullRect = pygame.Rect(bull.x, bull.y, 20, 20)
-    #  virRect = pygame.Rect(vir.x, vir.y, 50,50)
-    #  if bullRect.colliderect(virRect):
-     #     return
-
 
 
 class Bullet:
@@ -123,8 +115,8 @@ class Bullet:
     def off_screen(self, height):
         return not(self.y <= height and self.y >= 0)
 
-   # def collision(self, obj):
-    #    return collide(self, obj)
+    def collision(self, obj):
+        return collide(self, obj)
 
 
 
@@ -137,8 +129,8 @@ class Character:
       self.y = y
       self.health = None
       self.character_img = playerImage
+      self.mask = pygame.mask.from_surface(self.character_img)
       self.bullets = []
-      self.bulletRects = []
       self.shoot_img = drop_img
 
 
@@ -147,22 +139,18 @@ class Character:
       for bullet in self.bullets:
           bullet.draw(window)
 
-
-  def move_bullets(self, vel, obj):
+  def move_bullets(self, vel, objs):
       for bullet in self.bullets:
           bullet.move(vel)
           if bullet.off_screen(WINDOW_HEIGHT):
               self.bullets.remove(bullet)
+          else:
+              for obj in objs:
+                  if bullet.collision(obj):
+                      objs.remove(obj)
+                      if bullet in self.bullets:
+                          self.bullets.remove(bullet)
 
-      #for bulletRect in self.bulletRects[:]: COLISION MARCHE PAS !!!!!!!!!!!!!!!!!!!!!!
-        #  i = 0
-       #   bulletRect.y += vel
-       #   if bulletRect.y > WINDOW_HEIGHT:
-       #       self.bullets.remove(bullet)
-       #   elif bulletRect.colliderect(obj):
-       #       i+=1
-       #       self.bulletRects.remove(bulletRect)
-        #      print(i)
 
 
   def update(self):
@@ -170,8 +158,6 @@ class Character:
 
   def shoot(self):
       standard_ammo = Bullet(self.x + 8, self.y - 20, self.shoot_img)
-      bulletRect = pygame.Rect(standard_ammo.x, standard_ammo.y, 20, 20)
-      self.bulletRects.append(bulletRect)
       self.bullets.append(standard_ammo)
 
 
@@ -195,6 +181,7 @@ class Colorvirus(Virus):
   def __init__(self, x, y, color, hp):
       super().__init__(x, y)
       self.virus_img = self.Virus_MAP[color]
+      self.mask = pygame.mask.from_surface(self.virus_img)
       self.health = self.Health_Map[hp]
 
   def move(self, vel):
@@ -209,7 +196,10 @@ class Items(Virus):
         "trav_cert": travCertImage,
         "freeze" : freezingImage
     }
-
+def collide(obj1, obj2):
+    offset_x = obj2.x - obj1.x
+    offset_y = obj2.y - obj1.y
+    return obj1.mask.overlap(obj2.mask, (offset_x, offset_y)) != None
 
 def main():
   run = True
@@ -219,7 +209,6 @@ def main():
   main_font = pygame.font.SysFont("timesnewroman", 20)
   lost_font = pygame.font.SysFont("timesnewroman", 30, bold=True)
   enemies = []
-  enemyRects = []
   wave_length = 10
   wave = 0
   virus_vel = 4
@@ -249,8 +238,8 @@ def main():
           clock.tick(15)
 
   def redraw_window():
-      WINDOW.blit(startBGImage, (0,0))
-      WINDOW.blit(batbossImage, (150,0))
+      WINDOW.blit(StartBGImage, (0,0))
+      WINDOW.blit(BatbossImage, (150,0))
       pygame.draw.line(WINDOW,(255,0,0), (0,450),(600,450), 3)
       #draw text
       lives_label = main_font.render(f"Lives: {lives}", 1, (255, 0, 255))
@@ -281,8 +270,7 @@ def main():
           for i in range(wave_length):
               randVirus = random.choice(["red", "green", "blue", "purple"])
               enemy = Colorvirus(random.randrange(50, WINDOW_WIDTH-100), random.randrange(-1200, -300), randVirus, randVirus)
-              enemyRect = pygame.Rect(enemy.x, enemy.y, 50, 50)
-              enemyRects.append(enemyRect)
+
               enemies.append(enemy)
 
       for event in pygame.event.get():
@@ -310,41 +298,9 @@ def main():
               lives -= 1
               enemies.remove(enemy)
 
-      for enemyRect in enemyRects[:]:
-          enemyRect.y += virus_vel
-          if enemy.y + enemy.virus_img.get_height() > WINDOW_HEIGHT - 150:
-              enemyRects.remove(enemyRect)
 
 
       character.move_bullets(-shoot_vel, enemies)
 
       redraw_window()
 main()
-
-
-#CHAUVE SOURIS
-BatBossImage = pygame.image.load('covinv_docs/pngegg.png')
-BatBossRect = BatBossImage.get_rect()
-BatBossRect.topleft = (WINDOW_WIDTH-500, WINDOW_HEIGHT-600)
-
-
-# lance pygame, ouvre la fenetre de jeu et active le curseur de la souris
-pygame.init()
-mainClock = pygame.time.Clock()
-windowSurface = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
-pygame.display.set_caption('Dodger')
-pygame.mouse.set_visible(False) #curseur souris visible, mais je sais pas si on en a besoin
-
-def terminate():
-    pygame.quit()
-    sys.exit()
-
-def waitForPlayerToPressKey():
-    while True:
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                terminate()
-            if event.type == KEYDOWN:
-                if event.key == K_ESCAPE: # Pressing ESC quits.
-                    terminate()
-                return
