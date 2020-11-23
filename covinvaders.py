@@ -13,7 +13,7 @@ pygame.mixer.init()
 # ON AURAIT JUSTE A CHANGER LA PHOTO DE FOND, LE TYPE DENNEMI, ET LIMAGE DU BOSS, ET UNE CLASSE PR LES ECRANS AVEC TEXT
 # PAS OUBLIER DY METTRE LES BONUS ET LES BPNUS SPECIFIQUES AUX ECRANS VIRUS ET CEUX SPECIFIQUES AU NIVEAUX BOSS
 
-pygame.mixer.music.load('covinv_docs/Magic System- Premier Gaou.mp3')
+pygame.mixer.music.load('covinv_docs/Dior.mp3')
 
 # Taille fenetre
 FPS = 60
