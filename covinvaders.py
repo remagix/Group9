@@ -2,7 +2,9 @@ import pygame
 import time
 import random
 import os
-import pygame, random, sys
+import pygame
+import random
+import sys
 from pygame.locals import *
 
 pygame.font.init()
@@ -13,7 +15,7 @@ pygame.mixer.init()
 # ON AURAIT JUSTE A CHANGER LA PHOTO DE FOND, LE TYPE DENNEMI, ET LIMAGE DU BOSS, ET UNE CLASSE PR LES ECRANS AVEC TEXT
 # PAS OUBLIER DY METTRE LES BONUS ET LES BPNUS SPECIFIQUES AUX ECRANS VIRUS ET CEUX SPECIFIQUES AU NIVEAUX BOSS
 
-pygame.mixer.music.load('covinv_docs/Magic System- Premier Gaou.mp3')
+pygame.mixer.music.load('covinv_docs/Dior.mp3')
 
 # Taille fenetre
 FPS = 60
@@ -40,10 +42,10 @@ HP_PURPLE = 5
 
 # charge l'image du joueur
 
-playerImage = pygame.transform.scale(pygame.image.load('covinv_docs/samus.png'), (70, 90))
+heroImage = pygame.transform.scale(pygame.image.load('covinv_docs/samus.png'), (70, 90))
 
 # Charge L'image des boss
-BatbossImage = pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),
+batBossImage = pygame.transform.scale(pygame.image.load('covinv_docs/pngegg.png'),
                                       (WINDOW_WIDTH, WINDOW_HEIGHT))
 
 # Charge L'image des objets
@@ -56,14 +58,13 @@ freezingImage = pygame.transform.scale(pygame.image.load('covinv_docs/freezing.p
 
 # Charge L'image des tirs
 
-# PlayermissileImage = pygame.image,load()
 # BatmissileImage = pygame.image,load()
 # TrumpmissileImage = pygame.image,load()
 # PangolinmissileImage = pygame.image,load()
 
 # Charge L'image de l'arrière plan
 
-StartBGImage = pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/phototest.jpg')),
+startBGImage = pygame.transform.scale(pygame.image.load('covinv_docs/phototest.jpg'),
                                       (WINDOW_WIDTH, WINDOW_HEIGHT))
 
 
@@ -84,11 +85,23 @@ StartBGImage = pygame.transform.scale(pygame.image.load(os.path.join('covinv_doc
 # Story_SixBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
 # Story_SevenBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
 
-class Virus:
-
+class Falling:
     def __init__(self, x, y):
         self.x = x
         self.y = y
+        self.falling_img = None
+
+    def draw(self, window):
+        window.blit(self.falling_img, (self.x, self.y))
+
+    def update(self):
+        pygame.event.pump()
+
+
+class Virus(Falling):
+
+    def __init__(self, x, y):
+        super().__init__(x, y)
         self.health = None
         self.virus_img = None
 
@@ -96,7 +109,10 @@ class Virus:
         window.blit(self.virus_img, (self.x, self.y))
 
     def update(self):
-        pygame.event.pump()
+        super().update()
+
+    def move(self, vel):
+        self.y += vel
 
 
 class Bullet:
@@ -125,13 +141,30 @@ class Character:
         self.x = x
         self.y = y
         self.health = None
-        self.character_img = playerImage
-        self.mask = pygame.mask.from_surface(self.character_img)
+        self.character_img = None
+        self.mask = None
         self.bullets = []
-        self.shoot_img = drop_img
+        self.bullet_img = None
+
+    #def shoot
+    #def move_bullets
+
+    #def draw
+
+    def update(self):
+        pygame.event.pump()
+
+
+class Hero(Character):
+
+    def __init__(self, x, y):
+        super(Hero, self).__init__(x, y)
+        self.hero_img = heroImage
+        self.mask = pygame.mask.from_surface(self.hero_img)
+        self.bullet_img = drop_img
 
     def draw(self, window):
-        WINDOW.blit(self.character_img, (self.x, self.y))
+        window.blit(self.hero_img, (self.x, self.y))
         for bullet in self.bullets:
             bullet.draw(window)
 
@@ -151,14 +184,21 @@ class Character:
                             self.bullets.remove(bullet)
 
     def update(self):
-        pygame.event.pump()
+        super().update()
 
     def shoot(self):
-        standard_ammo = Bullet(self.x + 8, self.y - 20, self.shoot_img)
+        standard_ammo = Bullet(self.x + 8, self.y - 20, self.bullet_img)
         self.bullets.append(standard_ammo)
 
 
 class Colorvirus(Virus):
+
+    def __init__(self, x, y, color, hp):
+        super().__init__(x, y)
+        self.virus_img = self.Virus_MAP[color]
+        self.mask = pygame.mask.from_surface(self.virus_img)
+        self.health = self.Health_Map[hp]
+
     Virus_MAP = {
         "red": redVirusImage,
         "green": greenVirusImage,
@@ -173,17 +213,9 @@ class Colorvirus(Virus):
         "purple": HP_PURPLE
     }
 
-    def __init__(self, x, y, color, hp):
-        super().__init__(x, y)
-        self.virus_img = self.Virus_MAP[color]
-        self.mask = pygame.mask.from_surface(self.virus_img)
-        self.health = self.Health_Map[hp]
 
-    def move(self, vel):
-        self.y += vel
+class Items(Falling):
 
-
-class Items(Virus):
     Items_MAP = {
         "mask": maskImage,
         "vaccine": vaccineImage,
@@ -192,51 +224,72 @@ class Items(Virus):
         "freeze": freezingImage
     }
 
+    def __init__(self, x, y):
+        super().__init__(x, y)
+        self.bonus_img = None
+
+    def draw(self, window):
+        window.blit(self.bonus_img, (self.x, self.y))
+
+    def update(self):
+        super().update()
+
 
 def collide(obj1, obj2):
-    offset_x = obj2.x - obj1.x
-    offset_y = obj2.y - obj1.y
-    return obj1.mask.overlap(obj2.mask, (offset_x, offset_y)) != None
+    diff_x = obj2.x - obj1.x
+    diff_y = obj2.y - obj1.y
+    return obj1.mask.overlap(obj2.mask, (diff_x, diff_y)) is not None
 
 
 def main():
+
     run = True
     level = 1
-    lives = 20
+    lives = 10
     main_font = pygame.font.SysFont("timesnewroman", 20)
     lost_font = pygame.font.SysFont("timesnewroman", 30, bold=True)
     enemies = []
     wave_length = 10
     wave = 0
     virus_vel = 1
-    shoot_vel = 5
+    bullet_vel = 5
 
-    character = Character(300, 500)
+    hero = Hero(300, 500)
 
     clock = pygame.time.Clock()
     lost = False
 
     def stop():
         lost_label = lost_font.render("You have been infected", 1, (86, 189, 5))
-        lost_label2 = lost_font.render("You lost", 1, (86, 189, 5))
+        lost_label2 = lost_font.render("You lost (press key)", 1, (86, 189, 5))
+
         WINDOW.blit(lost_label, (WINDOW_WIDTH / 2 - lost_label.get_width() / 2, 260))
         WINDOW.blit(lost_label2, (WINDOW_WIDTH / 2 - lost_label2.get_width() / 2, 300))
         pygame.mixer.music.stop()
         pygame.mixer.music.load('covinv_docs/Despi.mid')
         pygame.mixer.music.play(-1, 0, 0)
+
         while lost:
             for event in pygame.event.get():
-
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     quit()
-
+                if event.type == KEYDOWN:
+                    if event.key == K_ESCAPE:
+                        pygame.quit()
+                        quit()
+                    else:
+                        pygame.mixer.music.stop()
+                        pygame.mixer.music.load('covinv_docs/Dior.mp3')
+                        main_start()
+                        break
+            pygame.init()
             pygame.display.update()
             clock.tick(15)
 
     def redraw_window():
-        WINDOW.blit(StartBGImage, (0, 0))
-        WINDOW.blit(BatbossImage, (150, 0))
+        WINDOW.blit(startBGImage, (0, 0))
+        WINDOW.blit(batBossImage, (150, 0))
         pygame.draw.line(WINDOW, (255, 0, 0), (0, 450), (600, 450), 3)
         # draw text
         lives_label = main_font.render(f"Lives: {lives}", 1, (255, 0, 255))
@@ -250,10 +303,8 @@ def main():
         for enemy in enemies:
             enemy.draw(WINDOW)
 
-        character.draw(WINDOW)
+        hero.draw(WINDOW)
         pygame.display.update()
-
-    pygame.mixer.music.play(-1, 0, 0)
 
     cooldown = 0
     while run:
@@ -272,23 +323,22 @@ def main():
                 enemies.append(enemy)
 
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+            if (event.type == pygame.QUIT) or ((event.type == KEYDOWN) and (event.key == K_ESCAPE)):
                 run = False
-            if event.type == KEYDOWN:
-                if event.key == K_ESCAPE:
-                    run = False
+                quit() # le quit ici fait que le jeu quitte, sans cela on retourne a l'ecran de depart pour recommencer
+
         if cooldown % 20 == 0:
-            character.shoot()
+            hero.shoot()
 
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT] and character.x - 5 > 0:
-            character.x -= 5
-        if keys[pygame.K_RIGHT] and character.x + 5 + character.character_img.get_width() < WINDOW_WIDTH:
-            character.x += 5
-        if keys[pygame.K_UP] and character.y - 5 > 450:
-            character.y -= 5
-        if keys[pygame.K_DOWN] and character.y + 5 + character.character_img.get_height() < WINDOW_HEIGHT:
-            character.y += 5
+        if keys[pygame.K_LEFT] and hero.x - 5 > 0:
+            hero.x -= 5
+        if keys[pygame.K_RIGHT] and hero.x + 5 + hero.hero_img.get_width() < WINDOW_WIDTH:
+            hero.x += 5
+        if keys[pygame.K_UP] and hero.y - 5 > 450:
+            hero.y -= 5
+        if keys[pygame.K_DOWN] and hero.y + 5 + hero.hero_img.get_height() < WINDOW_HEIGHT:
+            hero.y += 5
 
         for enemy in enemies[:]:
             enemy.move(virus_vel)
@@ -296,9 +346,30 @@ def main():
                 lives -= 1
                 enemies.remove(enemy)
 
-        character.move_bullets(-shoot_vel, enemies)
+        hero.move_bullets(-bullet_vel, enemies)
 
         redraw_window()
 
 
-main()
+def main_start():
+    run = True
+    title_font = pygame.font.SysFont("comicsans", 30)
+    pygame.mixer.music.play(-1, 0, 0)
+    while run:
+        WINDOW.blit(startBGImage, (0, 0))
+        title_label = title_font.render("Press any key to go to war...", 1, (255, 255, 255))
+        WINDOW.blit(title_label, (WINDOW_WIDTH/2 - title_label.get_width()/2, 350))
+        pygame.display.update()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    run = False
+                else:
+                    main()
+    pygame.quit()
+
+
+
+main_start()
