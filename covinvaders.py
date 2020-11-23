@@ -46,7 +46,7 @@ heroImage = pygame.transform.scale(pygame.image.load('covinv_docs/samus.png'), (
 
 # Charge L'image des boss
 batBossImage = pygame.transform.scale(pygame.image.load('covinv_docs/pngegg.png'),
-                                      (WINDOW_WIDTH, WINDOW_HEIGHT))
+                                      (200, 200))
 
 # Charge L'image des objets
 
@@ -66,7 +66,7 @@ freezingImage = pygame.transform.scale(pygame.image.load('covinv_docs/freezing.p
 
 startBGImage = pygame.transform.scale(pygame.image.load('covinv_docs/phototest.jpg'),
                                       (WINDOW_WIDTH, WINDOW_HEIGHT))
-test_BG = pygame.transform.scale(pygame.image.load('covinv_docs/test_BG.jpg'),
+jungle_BG = pygame.transform.scale(pygame.image.load('covinv_docs/test_BG.jpg'),
                                       (WINDOW_WIDTH, WINDOW_HEIGHT))
 
 # MenuBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
@@ -97,6 +97,7 @@ class Falling:
 
     def update(self):
         pygame.event.pump()
+
 
 
 class Virus(Falling):
@@ -150,10 +151,57 @@ class Character:
     #def shoot
     #def move_bullets
 
+
     #def draw
 
     def update(self):
         pygame.event.pump()
+
+
+class Boss(Character):
+
+    def __init__(self, x, y):
+        super(Boss, self).__init__(x, y)
+        self.boss_img = batBossImage
+        self.mask = pygame.mask.from_surface(self.boss_img)
+        self.bullet_img = redVirusImage
+        self.bullets = []
+        self.health = 15
+
+    def draw(self, window):
+        window.blit(self.boss_img, (self.x, self.y))
+        for bullet in self.bullets:
+            bullet.draw(window)
+
+    def move_bullets(self, vel, hero):
+        for bullet in self.bullets:
+            bullet.move(-vel)
+            if bullet.off_screen(WINDOW_HEIGHT):
+                self.bullets.remove(bullet)
+            else:
+                if bullet.collision(hero):
+                    if hero.lives - 1 > 0:
+                        hero.lives -= 1
+                    if bullet in self.bullets:
+                        self.bullets.remove(bullet)
+
+    def update(self):
+        super().update()
+
+    def shoot(self):
+        boss_ammo = Bullet(self.x, self.y, self.bullet_img)
+        self.bullets.append(boss_ammo)
+
+    def move(self):
+        span = random.randint(0, WINDOW_WIDTH)
+        if self.x + span >= WINDOW_WIDTH:
+            self.x -= span
+        else:
+            self.x += span
+        if self.x - span <= 0:
+            self.x += span
+        else:
+            self.x -= span
 
 
 class Hero(Character):
@@ -163,6 +211,7 @@ class Hero(Character):
         self.hero_img = heroImage
         self.mask = pygame.mask.from_surface(self.hero_img)
         self.bullet_img = drop_img
+        self.lives = 50
 
     def draw(self, window):
         window.blit(self.hero_img, (self.x, self.y))
@@ -183,6 +232,20 @@ class Hero(Character):
                             obj.health -= 1
                         if bullet in self.bullets:
                             self.bullets.remove(bullet)
+
+    def move_bullets_boss(self, vel, boss):
+        for bullet in self.bullets:
+            bullet.move(vel)
+            if bullet.off_screen(WINDOW_HEIGHT):
+                self.bullets.remove(bullet)
+            else:
+                if bullet.collision(boss):
+                    if boss.health - 1 == 0:
+                        boss.remove(boss)
+                    else:
+                        boss.health -= 1
+                    if bullet in self.bullets:
+                        self.bullets.remove(bullet)
 
     def update(self):
         super().update()
@@ -246,7 +309,6 @@ def main():
 
     run = True
     level = 1
-    lives = 100
     main_font = pygame.font.SysFont("timesnewroman", 20)
     lost_font = pygame.font.SysFont("timesnewroman", 30, bold=True)
     enemies = []
@@ -256,6 +318,7 @@ def main():
     bullet_vel = 5
 
     hero = Hero(300, 500)
+    batBoss = Boss(300, 0)
 
     clock = pygame.time.Clock()
     lost = False
@@ -292,7 +355,7 @@ def main():
         WINDOW.blit(BG, (0, 0))
         pygame.draw.line(WINDOW, (255, 0, 0), (0, 450), (600, 450), 3)
         # draw text
-        lives_label = main_font.render(f"Lives: {lives}", 1, (255, 0, 255))
+        lives_label = main_font.render(f"Lives: {hero.lives}", 1, (255, 0, 255))
         level_label = main_font.render(f"Level: {level}", 1, (255, 255, 255))
         wave_label = main_font.render(f"Wave: {wave}", 1, (255, 255, 255))
 
@@ -304,13 +367,16 @@ def main():
             enemy.draw(WINDOW)
 
         hero.draw(WINDOW)
+        if level == 2:
+            batBoss.draw(WINDOW)
         pygame.display.update()
 
-    cooldown = 0
+    hero_cooldown = 0
+    boss_cooldown = 0
     while run:
-        cooldown += 1
+        hero_cooldown += 1
         clock.tick(FPS)
-        if lives <= 0:
+        if hero.lives <= 0:
             lost = True
             stop()
         if level == 1:
@@ -327,31 +393,26 @@ def main():
             for enemy in enemies[:]:
                 enemy.move(virus_vel)
                 if enemy.y + enemy.virus_img.get_height() > WINDOW_HEIGHT - 150:
-                    lives -= 1
+                    hero.lives -= 1
                     enemies.remove(enemy)
-            if wave ==2:
+            if wave == 2:
                 level = 2
         if level == 2:
-            BG = test_BG
-            if len(enemies) == 0:
-                #wave += 1
-                wave_length += 5
-                for i in range(wave_length):
-                    randVirus = random.choice(["red", "green", "blue", "purple"])
-                    enemy = Colorvirus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1200, -300), randVirus,
-                                       randVirus)
-                    enemies.append(enemy)
-            for enemy in enemies[:]:
-                enemy.move(virus_vel)
-                if enemy.y + enemy.virus_img.get_height() > WINDOW_HEIGHT - 150:
-                    lives -= 1
-                    enemies.remove(enemy)
+            boss_cooldown += 1
+            BG = jungle_BG
+
+            if boss_cooldown % 100 == 0:
+                batBoss.shoot()
+            batBoss.move_bullets(-bullet_vel, hero)
+            hero.move_bullets_boss(bullet_vel, batBoss)
+            batBoss.move()
+
         for event in pygame.event.get():
             if (event.type == pygame.QUIT) or ((event.type == KEYDOWN) and (event.key == K_ESCAPE)):
                 run = False
                 quit() # le quit ici fait que le jeu quitte, sans cela on retourne a l'ecran de depart pour recommencer
 
-        if cooldown % 20 == 0:
+        if hero_cooldown % 20 == 0:
             hero.shoot()
 
         keys = pygame.key.get_pressed()
@@ -363,7 +424,6 @@ def main():
             hero.y -= 5
         if keys[pygame.K_DOWN] and hero.y + 5 + hero.hero_img.get_height() < WINDOW_HEIGHT:
             hero.y += 5
-
 
         hero.move_bullets(-bullet_vel, enemies)
 
