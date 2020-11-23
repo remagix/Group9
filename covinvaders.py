@@ -66,7 +66,8 @@ freezingImage = pygame.transform.scale(pygame.image.load('covinv_docs/freezing.p
 
 startBGImage = pygame.transform.scale(pygame.image.load('covinv_docs/phototest.jpg'),
                                       (WINDOW_WIDTH, WINDOW_HEIGHT))
-
+test_BG = pygame.transform.scale(pygame.image.load('covinv_docs/test_BG.jpg'),
+                                      (WINDOW_WIDTH, WINDOW_HEIGHT))
 
 # MenuBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
 # PauseBGImage =  pygame.transform.scale(pygame.image.load(os.path.join('covinv_docs/pngegg.png')),(WINDOW_WIDTH,WINDOW_HEIGHT))
@@ -245,13 +246,13 @@ def main():
 
     run = True
     level = 1
-    lives = 10
+    lives = 100
     main_font = pygame.font.SysFont("timesnewroman", 20)
     lost_font = pygame.font.SysFont("timesnewroman", 30, bold=True)
     enemies = []
     wave_length = 10
     wave = 0
-    virus_vel = 1
+    virus_vel = 5
     bullet_vel = 5
 
     hero = Hero(300, 500)
@@ -288,8 +289,7 @@ def main():
             clock.tick(15)
 
     def redraw_window():
-        WINDOW.blit(startBGImage, (0, 0))
-        WINDOW.blit(batBossImage, (150, 0))
+        WINDOW.blit(BG, (0, 0))
         pygame.draw.line(WINDOW, (255, 0, 0), (0, 450), (600, 450), 3)
         # draw text
         lives_label = main_font.render(f"Lives: {lives}", 1, (255, 0, 255))
@@ -313,15 +313,39 @@ def main():
         if lives <= 0:
             lost = True
             stop()
-        if len(enemies) == 0:
-            wave += 1
-            wave_length += 5
-            for i in range(wave_length):
-                randVirus = random.choice(["red", "green", "blue", "purple"])
-                enemy = Colorvirus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1200, -300), randVirus,
-                                   randVirus)
-                enemies.append(enemy)
-
+        if level == 1:
+            BG = startBGImage
+            if len(enemies) == 0:
+                wave += 1
+                wave_length += 5
+                if wave == 1:
+                    for i in range(wave_length):
+                        randVirus = random.choice(["red", "green"])
+                        enemy = Colorvirus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1200, -300), randVirus,
+                                           randVirus)
+                        enemies.append(enemy)
+            for enemy in enemies[:]:
+                enemy.move(virus_vel)
+                if enemy.y + enemy.virus_img.get_height() > WINDOW_HEIGHT - 150:
+                    lives -= 1
+                    enemies.remove(enemy)
+            if wave ==2:
+                level = 2
+        if level == 2:
+            BG = test_BG
+            if len(enemies) == 0:
+                #wave += 1
+                wave_length += 5
+                for i in range(wave_length):
+                    randVirus = random.choice(["red", "green", "blue", "purple"])
+                    enemy = Colorvirus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1200, -300), randVirus,
+                                       randVirus)
+                    enemies.append(enemy)
+            for enemy in enemies[:]:
+                enemy.move(virus_vel)
+                if enemy.y + enemy.virus_img.get_height() > WINDOW_HEIGHT - 150:
+                    lives -= 1
+                    enemies.remove(enemy)
         for event in pygame.event.get():
             if (event.type == pygame.QUIT) or ((event.type == KEYDOWN) and (event.key == K_ESCAPE)):
                 run = False
@@ -340,11 +364,6 @@ def main():
         if keys[pygame.K_DOWN] and hero.y + 5 + hero.hero_img.get_height() < WINDOW_HEIGHT:
             hero.y += 5
 
-        for enemy in enemies[:]:
-            enemy.move(virus_vel)
-            if enemy.y + enemy.virus_img.get_height() > WINDOW_HEIGHT - 150:
-                lives -= 1
-                enemies.remove(enemy)
 
         hero.move_bullets(-bullet_vel, enemies)
 
