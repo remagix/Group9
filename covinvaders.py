@@ -167,6 +167,7 @@ class Boss(Character):
       self.bullet_img = redVirusImage
       self.bullets = []
       self.health = 15
+      self.hasard = random.choice([2,-2])
 
   def draw(self, window):
       window.blit(self.boss_img, (self.x, self.y))
@@ -192,9 +193,34 @@ class Boss(Character):
       boss_ammo = Bullet(self.x + 100, self.y + self.boss_img.get_height(), self.bullet_img)
       self.bullets.append(boss_ammo)
 
-  def move(self):
-      hasard = random.choice([-10,-5,5,10])
-      self.x += hasard
+  def move(self, vel):
+      if self.x <= 0:
+          self.x += vel
+          self.hasard = vel
+      elif self.x > 0 and self.x < 100:
+          self.x += self.hasard
+      elif self.x == 100:
+          self.hasard = random.choice([vel, -vel])
+          self.x += self.hasard
+      elif self.x > 100 and self.x < 200:
+          self.x += self.hasard
+      elif self.x == 200:
+          self.hasard = random.choice([vel, -vel])
+          self.x += self.hasard
+      elif self.x > 200 and self.x < 300:
+          self.x += self.hasard
+      elif self.x == 300:
+          self.hasard = random.choice([vel, -vel])
+          self.x += self.hasard
+      elif self.x > 300 and self.x < WINDOW_WIDTH - batBossImage.get_width():
+          self.x += self.hasard
+
+      elif self.x >= WINDOW_WIDTH - batBossImage.get_width():
+          self.x -= vel
+          self.hasard = -vel
+
+
+
 
 
 class Hero(Character):
@@ -310,10 +336,10 @@ def main():
   wave = 0
   virus_vel = 5
   bullet_vel = 5
-  boss_vel = 3
+  boss_vel = 2
 
   hero = Hero(300, 500)
-  batBoss = Boss(300, 0)
+  batBoss = Boss(200, 0)
 
   clock = pygame.time.Clock()
   lost = False
@@ -395,11 +421,9 @@ def main():
       if level == 2:
           boss_cooldown += 1
           BG = jungle_BG
-          if boss_cooldown % 5 == 0:
-               batBoss.move()
+          batBoss.move(boss_vel)
           if boss_cooldown % 100 == 0:
               batBoss.shoot()
-              #batBoss.move()
           batBoss.move_bullets(-bullet_vel, hero)
           hero.move_bullets_vs_boss(-bullet_vel, batBoss)
 
