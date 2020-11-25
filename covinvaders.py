@@ -125,12 +125,25 @@ class Bullet:
      self.y = y
      self.img = img
      self.mask = pygame.mask.from_surface(self.img)
+     self.random_direction = random.choice([-10,-5, -2,2,5,10,])
+     #random_angle = random.choice([0.5, 1, 2, 4])
 
  def draw(self, window):
      window.blit(self.img, (self.x, self.y))
 
  def move(self, vel):
      self.y += vel
+
+ def movepangolin(self, vel):
+     self.y += vel
+     test = self.random_direction
+     self.x += self.random_direction
+     if self.x <= 0:
+         self.random_direction = -self.random_direction
+         #self.x -= self.random_direction
+     elif self.x >= 600- redVirusImage.get_width():
+         self.random_direction = -self.random_direction
+
 
  def off_screen(self, height):
      return not (height >= self.y >= 0)
@@ -150,11 +163,7 @@ class Character:
      self.bullets = []
      self.bullet_img = None
 
- #def shoot
- #def move_bullets
 
-
- #def draw
 
  def update(self):
      pygame.event.pump()
@@ -189,6 +198,18 @@ class Boss(Character):
                      hero.lives -= 1
                  if bullet in self.bullets:
                      self.bullets.remove(bullet)
+ def move_bullets2(self, vel, hero):
+     for bullet in self.bullets:
+         bullet.movepangolin(-vel)
+         if bullet.off_screen(WINDOW_HEIGHT):
+             self.bullets.remove(bullet)
+         else:
+             if bullet.collision(hero):
+                 if hero.lives - 1 > 0:
+                     hero.lives -= 1
+                 if bullet in self.bullets:
+                     self.bullets.remove(bullet)
+
  def healthbar(self, window):
      pygame.draw.rect(window, (255,0,0), (self.x +50, self.y ,100 ,8 ))
      pygame.draw.rect(window, (0, 255, 0),( self.x + 50, self.y, (100)*(self.health/self.maxhealth),8))
@@ -198,6 +219,10 @@ class Boss(Character):
 
  def shoot(self):
      boss_ammo = Bullet(random.choice([self.x + 10, self.x + 190]), self.y + 100, self.bullet_img)
+     self.bullets.append(boss_ammo)
+
+ def shoot2(self):
+     boss_ammo = Bullet(self.x + 100, self.y + batBossImage.get_height(), self.bullet_img)
      self.bullets.append(boss_ammo)
 
  def move(self, vel):
@@ -238,6 +263,7 @@ class Hero(Character):
      self.mask = pygame.mask.from_surface(self.hero_img)
      self.bullet_img = drop_img
      self.lives = 50
+     self.level = 0
 
  def draw(self, window):
      window.blit(self.hero_img, (self.x, self.y))
@@ -267,10 +293,7 @@ class Hero(Character):
              self.bullets.remove(bullet)
          else:
              if bullet.collision(boss):
-                 if boss.health - 1 == 0:
-                     main_start() #je sais pas quoi mettre ici pr passer a la suite
-                 else:
-                     boss.health -= 1
+                 boss.health -= 1
                  if bullet in self.bullets:
                      self.bullets.remove(bullet)
 
@@ -397,6 +420,8 @@ def main():
      hero.draw(WINDOW)
      if level == 2:
          batBoss.draw(WINDOW)
+     if level == 3:
+         batBoss.draw(WINDOW)
      pygame.display.update()
 
  hero_cooldown = 0
@@ -439,6 +464,29 @@ def main():
                  batBoss.shoot()
          batBoss.move_bullets(-bullet_vel, hero)
          hero.move_bullets_vs_boss(-bullet_vel, batBoss)
+         if batBoss.health == 0:
+             level += 1
+             batBoss.health = 50
+
+     if level == 3:
+         boss_cooldown += 1
+         BG = startBGImage
+         if batBoss.health > 25:
+             batBoss.boss_img = batBossImage
+             batBoss.move(boss_vel)
+             if boss_cooldown % 100 == 0:
+                 batBoss.shoot2()
+         else:
+             batBoss.boss_img = angryTrumpImage
+             batBoss.move(boss_vel*2)
+             if boss_cooldown % 50 == 0:
+                 batBoss.shoot2()
+         batBoss.move_bullets2(-bullet_vel, hero)
+         hero.move_bullets_vs_boss(-bullet_vel, batBoss)
+         if batBoss.health == 0:
+             level += 1
+     if level == 4:
+         main_start()
 
      for event in pygame.event.get():
          if (event.type == pygame.QUIT) or ((event.type == KEYDOWN) and (event.key == K_ESCAPE)):
