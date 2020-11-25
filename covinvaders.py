@@ -167,12 +167,14 @@ class Boss(Character):
      self.boss_img = batBossImage
      self.bullet_img = redVirusImage
      self.bullets = []
+     self.maxhealth = 50
      self.health = 50
      self.mask = pygame.mask.from_surface(self.boss_img)
      self.hasard = random.choice([2,-2])
 
  def draw(self, window):
      window.blit(self.boss_img, (self.x, self.y))
+     self.healthbar(window)
      for bullet in self.bullets:
          bullet.draw(window)
 
@@ -187,6 +189,9 @@ class Boss(Character):
                      hero.lives -= 1
                  if bullet in self.bullets:
                      self.bullets.remove(bullet)
+ def healthbar(self, window):
+     pygame.draw.rect(window, (255,0,0), (self.x +50, self.y ,100 ,8 ))
+     pygame.draw.rect(window, (0, 255, 0),( self.x + 50, self.y, (100)*(self.health/self.maxhealth),8))
 
  def update(self):
      super().update()
