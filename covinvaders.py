@@ -192,7 +192,7 @@ class Boss(Character):
      super().update()
 
  def shoot(self):
-     boss_ammo = Bullet(self.x + 100, self.y + self.boss_img.get_height(), self.bullet_img)
+     boss_ammo = Bullet(random.choice([self.x + 10, self.x + 190]), self.y + 100, self.bullet_img)
      self.bullets.append(boss_ammo)
 
  def move(self, vel):
@@ -425,11 +425,13 @@ def main():
          BG = jungle_BG
          if batBoss.health > 25:
              batBoss.move(boss_vel)
+             if boss_cooldown % 100 == 0:
+                 batBoss.shoot()
          else:
              batBoss.boss_img = angryTrumpImage
              batBoss.move(boss_vel*2)
-         if boss_cooldown % 100 == 0:
-             batBoss.shoot()
+             if boss_cooldown % 50 == 0:
+                 batBoss.shoot()
          batBoss.move_bullets(-bullet_vel, hero)
          hero.move_bullets_vs_boss(-bullet_vel, batBoss)
 
