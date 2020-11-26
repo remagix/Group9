@@ -413,9 +413,11 @@ def main():
 
         if timer_mask <= 0:
             invincible = False
+            hero.hero_img = heroImage
         else:
             invincible = True
             timer_mask -= 1
+            hero.hero_img = redVirusImage
 
         if timer_trav_cert <= 0:
             hero_vel = 5
@@ -432,7 +434,7 @@ def main():
                 wave += 1
                 wave_length += 5
                 if wave < 5:
-                    randBonus = random.choice(["freeze"])
+                    randBonus = random.choice(["freeze", "vaccine", "trav_cert", "ammo"])
                     bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1700, -1300), randBonus)
                     bonuses.append(bonus)
                     for i in range(wave_length):
@@ -469,7 +471,7 @@ def main():
                 level = text_screen(level, screen_test_BG)
                 wave = 0
                 bonuses.clear()
-                boss_cooldown = -1
+                boss_cooldown = 0
         if level == 2:
             boss_cooldown += 1
             BG = jungle_BG
@@ -479,13 +481,12 @@ def main():
                 if boss_cooldown % 100 == 0:
                     batBoss.shoot2()
             else:
-                batBoss.boss_img = batBossImage
                 batBoss.move(boss_vel * 2)
                 if boss_cooldown % 50 == 0:
                     batBoss.shoot2()
-            if boss_cooldown % 500 == 0:
-                randBonus = random.choice([ "mask"])
-                bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), -300, randBonus)
+            if boss_cooldown % 650 == 0:
+                randBonus = random.choice(["ammo","trav_cert", "vaccine","mask"])
+                bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), -100, randBonus)
                 bonuses.append(bonus)
             batBoss.move_bullets2(-bullet_vel, hero, invincible)
             hero.move_bullets_vs_boss(-bullet_vel, batBoss)
@@ -502,16 +503,17 @@ def main():
                     elif bonus.bonus_num == "ammo":
                         timer_ammo = 300
                     elif bonus.bonus_num == "mask":
-                        timer_mask = 500
+                        timer_mask = 400
 
             if batBoss.health == 0:
                 level += 1
-                batBoss.health = 50
+                bossUS.health = 50
                 bonuses.clear()
 
         if level == 3:
             boss_cooldown += 1
             BG = startBGImage
+
             if bossUS.health > 25:
                 bossUS.boss_img = bossUSImage
                 bossUS.move(boss_vel)
@@ -522,10 +524,32 @@ def main():
                 bossUS.move(boss_vel * 2)
                 if boss_cooldown % 50 == 0:
                     bossUS.shoot()
+            if boss_cooldown % 650 == 0:
+                randBonus = random.choice(["ammo","trav_cert", "vaccine","mask"])
+                bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), -100, randBonus)
+                bonuses.append(bonus)
             bossUS.move_bullets(-bullet_vel, hero, invincible)
             hero.move_bullets_vs_boss(-bullet_vel, bossUS)
+
+            for bonus in bonuses[:]:
+                bonus.move(bonus_vel)
+                if bonus.touches(hero) or bonus.y + bonus.bonus_img.get_height() > WINDOW_HEIGHT:
+                    bonuses.remove(bonus)
+                if bonus.touches(hero):
+                    if bonus.bonus_num == "vaccine":
+                        hero.lives += 1
+                    elif bonus.bonus_num == "trav_cert":
+                        timer_trav_cert = 500
+                    elif bonus.bonus_num == "ammo":
+                        timer_ammo = 300
+                    elif bonus.bonus_num == "mask":
+                        timer_mask = 400
+
             if bossUS.health == 0:
                 level += 1
+                batBoss.health = 50
+                bonuses.clear()
+
         if level == 4:
             main_start()
 
