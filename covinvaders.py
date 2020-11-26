@@ -167,27 +167,29 @@ class Boss(Character):
         for bullet in self.bullets:
             bullet.draw(window)
 
-    def move_bullets(self, vel, hero):
+    def move_bullets(self, vel, hero, invincible):
         for bullet in self.bullets:
             bullet.move(-vel)
             if bullet.off_screen(WINDOW_HEIGHT):
                 self.bullets.remove(bullet)
             else:
                 if bullet.collides_with(hero):
-                    if hero.lives - 1 > 0:
-                        hero.lives -= 1
+                    if not invincible:
+                        if hero.lives - 1 > 0:
+                            hero.lives -= 1
                     if bullet in self.bullets:
                         self.bullets.remove(bullet)
 
-    def move_bullets2(self, vel, hero):
+    def move_bullets2(self, vel, hero, invincible):
         for bullet in self.bullets:
             bullet.move_pangolin(-vel)
             if bullet.off_screen(WINDOW_HEIGHT):
                 self.bullets.remove(bullet)
             else:
                 if bullet.collides_with(hero):
-                    if hero.lives - 1 > 0:
-                        hero.lives -= 1
+                    if not invincible:
+                        if hero.lives - 1 > 0:
+                            hero.lives -= 1
                     if bullet in self.bullets:
                         self.bullets.remove(bullet)
 
@@ -334,6 +336,8 @@ def main():
     wave_length = 10
     timer_trav_cert = 0
     timer_ammo = 0
+    timer_freeze = 0
+    timer_mask = 0
     wave = 0
     virus_vel = 1
     bonus_vel = 2
@@ -406,11 +410,19 @@ def main():
     while run:
         hero_cooldown += 1
         clock.tick(FPS)
+
+        if timer_mask <= 0:
+            invincible = False
+        else:
+            invincible = True
+            timer_mask -= 1
+
         if timer_trav_cert <= 0:
             hero_vel = 5
         else:
             hero_vel = 10
             timer_trav_cert -= 1
+
         if hero.lives <= 0:
             lost = True
             stop()
@@ -420,7 +432,7 @@ def main():
                 wave += 1
                 wave_length += 5
                 if wave < 5:
-                    randBonus = random.choice(["mask", "vaccine", "ammo", "trav_cert", "freeze"])
+                    randBonus = random.choice(["freeze"])
                     bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1700, -1300), randBonus)
                     bonuses.append(bonus)
                     for i in range(wave_length):
@@ -438,14 +450,21 @@ def main():
                     if bonus.bonus_num == "vaccine":
                         hero.lives += 1
                     elif bonus.bonus_num == "trav_cert":
-                        timer = 500
-
+                        timer_trav_cert = 500
+                    elif bonus.bonus_num == "ammo":
+                        timer_ammo = 500
+                    elif bonus.bonus_num == "freeze":
+                        timer_freeze = 300
 
             for enemy in enemies[:]:
-                enemy.move(virus_vel)
+                if timer_freeze <= 0:
+                    enemy.move(virus_vel)
+                else:
+                    enemy.move(0)
                 if enemy.y + enemy.virus_img.get_height() > WINDOW_HEIGHT - 150:
                     hero.lives -= 1
                     enemies.remove(enemy)
+            timer_freeze -= 1
             if wave == 2:
                 level = text_screen(level, screen_test_BG)
                 wave = 0
@@ -454,6 +473,7 @@ def main():
         if level == 2:
             boss_cooldown += 1
             BG = jungle_BG
+
             if batBoss.health > 25:
                 batBoss.move(boss_vel)
                 if boss_cooldown % 100 == 0:
@@ -463,11 +483,11 @@ def main():
                 batBoss.move(boss_vel * 2)
                 if boss_cooldown % 50 == 0:
                     batBoss.shoot2()
-                if boss_cooldown % 500 == 0:
-                    randBonus = random.choice([ "ammo", "trav_cert"])
-                    bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), -300, randBonus)
-                    bonuses.append(bonus)
-            batBoss.move_bullets2(-bullet_vel, hero)
+            if boss_cooldown % 500 == 0:
+                randBonus = random.choice([ "mask"])
+                bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), -300, randBonus)
+                bonuses.append(bonus)
+            batBoss.move_bullets2(-bullet_vel, hero, invincible)
             hero.move_bullets_vs_boss(-bullet_vel, batBoss)
 
             for bonus in bonuses[:]:
@@ -481,6 +501,8 @@ def main():
                         timer_trav_cert = 500
                     elif bonus.bonus_num == "ammo":
                         timer_ammo = 300
+                    elif bonus.bonus_num == "mask":
+                        timer_mask = 500
 
             if batBoss.health == 0:
                 level += 1
@@ -500,7 +522,7 @@ def main():
                 bossUS.move(boss_vel * 2)
                 if boss_cooldown % 50 == 0:
                     bossUS.shoot()
-            bossUS.move_bullets(-bullet_vel, hero)
+            bossUS.move_bullets(-bullet_vel, hero, invincible)
             hero.move_bullets_vs_boss(-bullet_vel, bossUS)
             if bossUS.health == 0:
                 level += 1
@@ -511,6 +533,7 @@ def main():
             if (event.type == pygame.QUIT) or ((event.type == KEYDOWN) and (event.key == K_ESCAPE)):
                 run = False
                 quit()  # le quit ici fait que le jeu quitte, sans cela on retourne a l'ecran de depart pour recommencer
+
         if timer_ammo <= 0:
             if hero_cooldown % 20 == 0:
                 hero.shoot()
