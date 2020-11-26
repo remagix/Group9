@@ -27,6 +27,7 @@ purpleVirusImage = pygame.transform.scale(pygame.image.load('covinv_docs/purple_
 
 
 drop_img = pygame.transform.scale(pygame.image.load('covinv_docs/drop.png'), (20, 20))
+batmissile_img = pygame.transform.scale(pygame.image.load('covinv_docs/missilelittlebat.png'), (80, 80))
 
 
 HP_RED = 2
@@ -46,6 +47,12 @@ bossUSImage = pygame.transform.scale(pygame.image.load('covinv_docs/BossUS.png')
 angryBossUSImage = pygame.transform.scale(pygame.image.load('covinv_docs/ANGRY BOSS US.png'),
                                       (200, 200))
 
+pangolinImage = pygame.transform.scale(pygame.image.load('covinv_docs/pangolin.png'),
+                                      (200, 150))
+
+pangolindefImage = pygame.transform.scale(pygame.image.load('covinv_docs/pangolin_en_boule.jpg'),
+                                      (180, 180))
+
 
 maskImage = pygame.transform.scale(pygame.image.load('covinv_docs/medical-mask.png'), (50, 50))
 vaccineImage = pygame.transform.scale(pygame.image.load('covinv_docs/syringe.png'), (50, 50))
@@ -59,7 +66,8 @@ startBGImage = pygame.transform.scale(pygame.image.load('covinv_docs/phototest.j
 
 jungle_BG = pygame.transform.scale(pygame.image.load('covinv_docs/test_BG.jpg'),
                                    (WINDOW_WIDTH, WINDOW_HEIGHT))
-
+screen_test_BG = pygame.transform.scale(pygame.image.load('covinv_docs/Story 1.1 .png'),
+                                   (WINDOW_WIDTH, WINDOW_HEIGHT))
 
 class Falling:
     def __init__(self, x, y):
@@ -98,8 +106,7 @@ class Bullet:
         self.y = y
         self.img = img
         self.mask = pygame.mask.from_surface(self.img)
-        self.random_direction = random.choice([-10, -5, -2, 2, 5, 10, ])
-        # random_angle = random.choice([0.5, 1, 2, 4])
+        self.random_direction = random.randrange(-8,8,1)
 
     def draw(self, window):
         window.blit(self.img, (self.x, self.y))
@@ -115,11 +122,9 @@ class Bullet:
 
     def move_pangolin(self, vel):
         self.y += vel
-        test = self.random_direction
         self.x += self.random_direction
         if self.x <= 0:
             self.random_direction = -self.random_direction
-            # self.x -= self.random_direction
         elif self.x >= 600 - redVirusImage.get_width():
             self.random_direction = -self.random_direction
 
@@ -150,7 +155,7 @@ class Boss(Character):
         super(Boss, self).__init__(x, y)
         self.boss_img = batBossImage
         self.mask = pygame.mask.from_surface(self.boss_img)
-        self.bullet_img = redVirusImage
+        self.bullet_img = batmissile_img
         self.bullets = []
         self.maxhealth = 50
         self.health = 50
@@ -191,11 +196,11 @@ class Boss(Character):
         pygame.draw.rect(window, (0, 255, 0), (self.x + 50, self.y, (100) * self.health / self.maxhealth, 8))
 
     def shoot(self):
-        boss_ammo = Bullet(self.x + 100, self.y + self.boss_img.get_height(), self.bullet_img)
+        boss_ammo = Bullet(random.choice([self.x , self.x + 150]), self.y - 100 + self.boss_img.get_height(), self.bullet_img)
         self.bullets.append(boss_ammo)
 
     def shoot2(self):
-        boss_ammo = Bullet(self.x + 100, self.y + self.boss_img.get_height(), self.bullet_img)
+        boss_ammo = Bullet(self.x + 100, self.y + 100, self.bullet_img)
         self.bullets.append(boss_ammo)
 
     def move(self, vel):
@@ -318,6 +323,7 @@ def collide(obj1, obj2):
     return obj1.mask.overlap(obj2.mask, (diff_x, diff_y)) is not None
 
 
+
 def main():
     run = True
     level = 1
@@ -331,6 +337,10 @@ def main():
     bonus_vel = 2
     bullet_vel = 5
     boss_vel = 2
+    if pygame.time.get_ticks() == 0:
+        hero_vel = 5
+    else:
+        hero_vel = 10
 
     hero = Hero(300, 500)
     batBoss = Boss(200, 0)
@@ -405,16 +415,16 @@ def main():
             if len(enemies) == 0:
                 wave += 1
                 wave_length += 5
-                if wave == 1:
+                if wave < 5:
+                    randBonus = random.choice(["mask", "vaccine", "ammo", "trav_cert", "freeze"])
+                    bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1200, -300), randBonus)
+                    bonuses.append(bonus)
                     for i in range(wave_length):
                         randVirus = random.choice(["red", "green"])
-                        randBonus = random.choice(["mask", "vaccine", "ammo", "trav_cert", "freeze"])
-                        bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1200, -300), randBonus)
                         enemy = Colorvirus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1200, -300),
                                            randVirus,
                                            randVirus)
                         enemies.append(enemy)
-                        bonuses.append(bonus)
 
             for bonus in bonuses[:]:
                 bonus.move(bonus_vel)
@@ -423,6 +433,9 @@ def main():
                 if bonus.touches(hero):
                     if bonus.bonus_num == "vaccine":
                         hero.lives += 1
+                    elif bonus.bonus_num == "trav_cert":
+                        hero_vel = 10
+
 
             for enemy in enemies[:]:
                 enemy.move(virus_vel)
@@ -430,21 +443,37 @@ def main():
                     hero.lives -= 1
                     enemies.remove(enemy)
             if wave == 2:
-                level = 2
+                level = text_screen(level, screen_test_BG)
+                wave = 0
         if level == 2:
             boss_cooldown += 1
             BG = jungle_BG
             if batBoss.health > 25:
                 batBoss.move(boss_vel)
                 if boss_cooldown % 100 == 0:
-                    batBoss.shoot()
+                    batBoss.shoot2()
             else:
                 batBoss.boss_img = batBossImage
                 batBoss.move(boss_vel * 2)
                 if boss_cooldown % 50 == 0:
-                    batBoss.shoot()
-            batBoss.move_bullets(-bullet_vel, hero)
+                    batBoss.shoot2()
+                if boss_cooldown % 400 == 0:
+                    randBonus = random.choice([ "ammo", "trav_cert"])
+                    bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), -300, randBonus)
+                    bonuses.append(bonus)
+            batBoss.move_bullets2(-bullet_vel, hero)
             hero.move_bullets_vs_boss(-bullet_vel, batBoss)
+
+            for bonus in bonuses[:]:
+                bonus.move(bonus_vel)
+                if bonus.touches(hero) or bonus.y + bonus.bonus_img.get_height() > WINDOW_HEIGHT:
+                    bonuses.remove(bonus)
+                if bonus.touches(hero):
+                    if bonus.bonus_num == "vaccine":
+                        hero.lives += 1
+                    elif bonus.bonus_num == "trav_cert":
+                        hero_vel = 10
+
             if batBoss.health == 0:
                 level += 1
                 batBoss.health = 50
@@ -456,13 +485,13 @@ def main():
                 bossUS.boss_img = bossUSImage
                 bossUS.move(boss_vel)
                 if boss_cooldown % 100 == 0:
-                    bossUS.shoot2()
+                    bossUS.shoot()
             else:
-                bossUS.boss_img = bossUSImage
+                bossUS.boss_img = angryBossUSImage
                 bossUS.move(boss_vel * 2)
                 if boss_cooldown % 50 == 0:
-                    bossUS.shoot2()
-            bossUS.move_bullets2(-bullet_vel, hero)
+                    bossUS.shoot()
+            bossUS.move_bullets(-bullet_vel, hero)
             hero.move_bullets_vs_boss(-bullet_vel, bossUS)
             if bossUS.health == 0:
                 level += 1
@@ -479,18 +508,34 @@ def main():
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] and hero.x - 5 > 0:
-            hero.x -= 5
+            hero.x -= hero_vel
         if keys[pygame.K_RIGHT] and hero.x + 5 + hero.hero_img.get_width() < WINDOW_WIDTH:
-            hero.x += 5
+            hero.x += hero_vel
         if keys[pygame.K_UP] and hero.y - 5 > 450:
-            hero.y -= 5
+            hero.y -= hero_vel
         if keys[pygame.K_DOWN] and hero.y + 5 + hero.hero_img.get_height() < WINDOW_HEIGHT:
-            hero.y += 5
+            hero.y += hero_vel
 
         hero.move_bullets(-bullet_vel, enemies)
 
         redraw_window()
 
+def text_screen(lvl, image):
+    pygame.init()
+    run = True
+    while run:
+        WINDOW.blit(image, (0, 0))
+        pygame.display.update()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    run = False
+                else:
+                    lvl += 1
+                    return lvl
+    pygame.quit()
 
 def main_start():
     pygame.init()
