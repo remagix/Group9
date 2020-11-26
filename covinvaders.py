@@ -534,5 +534,5 @@ def main_start():
 
 
 main_start()
-#Il a fallu agir aussi vite que possible, mais aussi lentement que nécessaire
+#Il a fallu agir aussi vite que possible, mais aussi lentement que nécessaire !
 
