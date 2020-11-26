@@ -43,8 +43,8 @@ batBossImage = pygame.transform.scale(pygame.image.load('covinv_docs/pngegg.png'
 bossUSImage = pygame.transform.scale(pygame.image.load('covinv_docs/BossUS.png'),
                                       (200, 200))
 
-#angryBossUSImage = pygame.transform.scale(pygame.image.load('covinv_docs/ANGRY BOSS US.png'),
-                                    #  (200, 200))
+angryBossUSImage = pygame.transform.scale(pygame.image.load('covinv_docs/ANGRY BOSS US.png'),
+                                      (200, 200))
 
 
 maskImage = pygame.transform.scale(pygame.image.load('covinv_docs/medical-mask.png'), (50, 50))
