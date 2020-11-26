@@ -332,15 +332,13 @@ def main():
     enemies = []
     bonuses = []
     wave_length = 10
+    timer = 0
     wave = 0
     virus_vel = 1
     bonus_vel = 2
     bullet_vel = 5
     boss_vel = 2
-    if pygame.time.get_ticks() == 0:
-        hero_vel = 5
-    else:
-        hero_vel = 10
+
 
     hero = Hero(300, 500)
     batBoss = Boss(200, 0)
@@ -407,6 +405,11 @@ def main():
     while run:
         hero_cooldown += 1
         clock.tick(FPS)
+        if timer <= 0:
+            hero_vel = 5
+        else:
+            hero_vel = 10
+            timer -= 1
         if hero.lives <= 0:
             lost = True
             stop()
@@ -417,7 +420,7 @@ def main():
                 wave_length += 5
                 if wave < 5:
                     randBonus = random.choice(["mask", "vaccine", "ammo", "trav_cert", "freeze"])
-                    bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1200, -300), randBonus)
+                    bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1700, -1300), randBonus)
                     bonuses.append(bonus)
                     for i in range(wave_length):
                         randVirus = random.choice(["red", "green"])
@@ -434,7 +437,7 @@ def main():
                     if bonus.bonus_num == "vaccine":
                         hero.lives += 1
                     elif bonus.bonus_num == "trav_cert":
-                        hero_vel = 10
+                        timer = 500
 
 
             for enemy in enemies[:]:
@@ -445,6 +448,8 @@ def main():
             if wave == 2:
                 level = text_screen(level, screen_test_BG)
                 wave = 0
+                bonuses.clear()
+                boss_cooldown = -1
         if level == 2:
             boss_cooldown += 1
             BG = jungle_BG
@@ -457,8 +462,8 @@ def main():
                 batBoss.move(boss_vel * 2)
                 if boss_cooldown % 50 == 0:
                     batBoss.shoot2()
-                if boss_cooldown % 400 == 0:
-                    randBonus = random.choice([ "ammo", "trav_cert"])
+                if boss_cooldown % 500 == 0:
+                    randBonus = random.choice([ "mask" ,"ammo", "trav_cert"])
                     bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), -300, randBonus)
                     bonuses.append(bonus)
             batBoss.move_bullets2(-bullet_vel, hero)
@@ -472,11 +477,12 @@ def main():
                     if bonus.bonus_num == "vaccine":
                         hero.lives += 1
                     elif bonus.bonus_num == "trav_cert":
-                        hero_vel = 10
+                        timer = 500
 
             if batBoss.health == 0:
                 level += 1
                 batBoss.health = 50
+                bonuses.clear()
 
         if level == 3:
             boss_cooldown += 1
