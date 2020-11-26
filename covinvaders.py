@@ -332,7 +332,8 @@ def main():
     enemies = []
     bonuses = []
     wave_length = 10
-    timer = 0
+    timer_trav_cert = 0
+    timer_ammo = 0
     wave = 0
     virus_vel = 1
     bonus_vel = 2
@@ -405,11 +406,11 @@ def main():
     while run:
         hero_cooldown += 1
         clock.tick(FPS)
-        if timer <= 0:
+        if timer_trav_cert <= 0:
             hero_vel = 5
         else:
             hero_vel = 10
-            timer -= 1
+            timer_trav_cert -= 1
         if hero.lives <= 0:
             lost = True
             stop()
@@ -463,7 +464,7 @@ def main():
                 if boss_cooldown % 50 == 0:
                     batBoss.shoot2()
                 if boss_cooldown % 500 == 0:
-                    randBonus = random.choice([ "mask" ,"ammo", "trav_cert"])
+                    randBonus = random.choice([ "ammo", "trav_cert"])
                     bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), -300, randBonus)
                     bonuses.append(bonus)
             batBoss.move_bullets2(-bullet_vel, hero)
@@ -477,7 +478,9 @@ def main():
                     if bonus.bonus_num == "vaccine":
                         hero.lives += 1
                     elif bonus.bonus_num == "trav_cert":
-                        timer = 500
+                        timer_trav_cert = 500
+                    elif bonus.bonus_num == "ammo":
+                        timer_ammo = 300
 
             if batBoss.health == 0:
                 level += 1
@@ -508,9 +511,13 @@ def main():
             if (event.type == pygame.QUIT) or ((event.type == KEYDOWN) and (event.key == K_ESCAPE)):
                 run = False
                 quit()  # le quit ici fait que le jeu quitte, sans cela on retourne a l'ecran de depart pour recommencer
-
-        if hero_cooldown % 20 == 0:
-            hero.shoot()
+        if timer_ammo <= 0:
+            if hero_cooldown % 20 == 0:
+                hero.shoot()
+        else:
+            if hero_cooldown % 10 == 0:
+                hero.shoot()
+                timer_ammo -= 10
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] and hero.x - 5 > 0:
