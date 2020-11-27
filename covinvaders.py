@@ -39,7 +39,7 @@ HP_PURPLE = 5
 heroImage = pygame.transform.scale(pygame.image.load('covinv_docs/samus.png'), (70, 90))
 
 batBossImage = pygame.transform.scale(pygame.image.load('covinv_docs/pngegg.png'),
-                                      (200, 200))
+                                      (200, 140))
 
 bossUSImage = pygame.transform.scale(pygame.image.load('covinv_docs/BossUS.png'),
                                       (200, 200))
@@ -415,7 +415,8 @@ def main():
 
         WINDOW.blit(lives_label, (10, 10))
         WINDOW.blit(level_label, (WINDOW_WIDTH - level_label.get_width() - 10, 10))
-        WINDOW.blit(wave_label, (WINDOW_WIDTH / 2 - wave_label.get_width() / 2, 10))
+        if level % 2 == 1:
+            WINDOW.blit(wave_label, (WINDOW_WIDTH / 2 - wave_label.get_width() / 2, 10))
 
         for enemy in enemies:
             enemy.draw(WINDOW)
@@ -500,6 +501,7 @@ def main():
                 level = text_screen(level, story2_img)
                 wave = 0
                 wave_length = 10
+                enemies = []
                 bonuses.clear()
                 hero.bullets.clear()
                 hero.lives = 3
@@ -596,6 +598,7 @@ def main():
                 level = text_screen(level, story4_img)
                 wave = 0
                 wave_length = 10
+                enemies = []
                 bonuses.clear()
                 hero.bullets.clear()
                 hero.lives = 3
@@ -694,6 +697,7 @@ def main():
                 level = text_screen(level, story2_img)
                 wave = 0
                 wave_length = 10
+                enemies = []
                 bonuses.clear()
                 hero.bullets.clear()
                 hero.lives = 3
