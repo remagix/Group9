@@ -463,7 +463,7 @@ def main():
         if level == 0:
             level = text_screen(level, story1_img)
         if level == 1:
-            BG = startBGImage
+            BG = jungle_BG
             if len(enemies) == 0:
                 wave += 1
                 wave_length += 5
