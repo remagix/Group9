@@ -62,10 +62,19 @@ travCertImage = pygame.transform.scale(pygame.image.load('covinv_docs/certificat
 freezingImage = pygame.transform.scale(pygame.image.load('covinv_docs/freezing.png'), (40, 40))
 
 
-startBGImage = pygame.transform.scale(pygame.image.load('covinv_docs/espace2.jpg'),
+startBGImage = pygame.transform.scale(pygame.image.load('covinv_docs/phototest.jpg'),
                                       (WINDOW_WIDTH, WINDOW_HEIGHT))
-
 jungle_BG = pygame.transform.scale(pygame.image.load('covinv_docs/test_BG.jpg'),
+                                   (WINDOW_WIDTH, WINDOW_HEIGHT))
+batcav_BG = pygame.transform.scale(pygame.image.load('covinv_docs/bat_cave.jpeg'),
+                                   (WINDOW_WIDTH, WINDOW_HEIGHT))
+DC_BG = pygame.transform.scale(pygame.image.load('covinv_docs/DC_landscape.jpeg'),
+                                   (WINDOW_WIDTH, WINDOW_HEIGHT))
+whitehouse_BG = pygame.transform.scale(pygame.image.load('covinv_docs/white_house_fire.jpg'),
+                                   (WINDOW_WIDTH, WINDOW_HEIGHT))
+space_BG = pygame.transform.scale(pygame.image.load('covinv_docs/earth.jpg'),
+                                   (WINDOW_WIDTH, WINDOW_HEIGHT))
+spacesun_BG = pygame.transform.scale(pygame.image.load('covinv_docs/sun_pango (2).jpg'),
                                    (WINDOW_WIDTH, WINDOW_HEIGHT))
 story1_img = pygame.transform.scale(pygame.image.load('covinv_docs/Story 1.1 .png'),
                                    (WINDOW_WIDTH, WINDOW_HEIGHT))
@@ -202,7 +211,6 @@ class Boss(Character):
                             hero.lives -= 1
                     if bullet in self.bullets:
                         self.bullets.remove(bullet)
-
     def move_bullets_batBoss(self, vel, hero, invincible):
         for bullet in self.bullets:
             bullet.move_pangolin(-vel)
@@ -221,8 +229,7 @@ class Boss(Character):
         pygame.draw.rect(window, (0, 255, 0), (self.x + 50, self.y, (100) * self.health / self.maxhealth, 8))
 
     def shoot_BossUS(self):
-        boss_ammo = Bullet(random.choice([self.x , self.x + 150]), self.y - 100 + self.boss_img.get_height(),
-                           self.bullet_img)
+        boss_ammo = Bullet(random.choice([self.x , self.x + 150]), self.y - 100 + self.boss_img.get_height(), self.bullet_img)
         self.bullets.append(boss_ammo)
 
     def shoot_Pangolin(self):
@@ -353,7 +360,7 @@ def collide(obj1, obj2):
 
 def main():
     run = True
-    level = 0
+    level = 6
     main_font = pygame.font.SysFont("timesnewroman", 20)
     lost_font = pygame.font.SysFont("timesnewroman", 30, bold=True)
     enemies = []
@@ -434,7 +441,6 @@ def main():
             bossUS.draw(WINDOW)
         if level == 6:
             pangolinBoss.draw(WINDOW)
-
         pygame.display.update()
 
     hero_cooldown = 0
@@ -463,7 +469,7 @@ def main():
         if level == 0:
             level = text_screen(level, story1_img)
         if level == 1:
-            BG = startBGImage
+            BG = jungle_BG
             if len(enemies) == 0:
                 wave += 1
                 wave_length += 5
@@ -516,7 +522,7 @@ def main():
 
         if level == 2:
             boss_cooldown += 1
-            BG = jungle_BG
+            BG = batcav_BG
 
             if batBoss.health > 25:
                 batBoss.move(boss_vel)
@@ -560,7 +566,7 @@ def main():
                 timer_mask = 0
 
         if level == 3:
-            BG = startBGImage
+            BG = DC_BG
             if len(enemies) == 0:
                 wave += 1
                 wave_length += 5
@@ -613,7 +619,7 @@ def main():
 
         if level == 4:
             boss_cooldown += 1
-            BG = startBGImage
+            BG = whitehouse_BG
 
             if bossUS.health > 25:
                 bossUS.boss_img = bossUSImage
@@ -659,7 +665,7 @@ def main():
                 timer_mask = 0
 
         if level == 5:
-            BG = startBGImage
+            BG = space_BG
             if len(enemies) == 0:
                 wave += 1
                 wave_length += 5
@@ -712,7 +718,7 @@ def main():
 
         if level == 6:
             boss_cooldown += 1
-            BG = startBGImage
+            BG = spacesun_BG
 
             if timer_pangolin <= 400:
                 timer_pangolin += 1
