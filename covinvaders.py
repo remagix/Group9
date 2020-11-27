@@ -7,6 +7,7 @@ import random
 import sys
 from pygame.locals import *
 
+
 pygame.font.init()
 pygame.mixer.init()
 
@@ -350,7 +351,7 @@ def collide(obj1, obj2):
 
 def main():
     run = True
-    level = 1
+    level = 6
     main_font = pygame.font.SysFont("timesnewroman", 20)
     lost_font = pygame.font.SysFont("timesnewroman", 30, bold=True)
     enemies = []
