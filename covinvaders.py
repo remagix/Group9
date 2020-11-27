@@ -55,7 +55,8 @@ pangolinImage = pygame.transform.scale(pygame.image.load('covinv_docs/pangolin.p
 
 pangolindefImage = pygame.transform.scale(pygame.image.load('covinv_docs/pangolin_en_boule.png'),
                                       (160, 160))
-
+explosionImage =  pygame.transform.scale(pygame.image.load('covinv_docs/explosion.png'),
+                                      (200, 200))
 
 maskImage = pygame.transform.scale(pygame.image.load('covinv_docs/medical-mask.png'), (50, 50))
 vaccineImage = pygame.transform.scale(pygame.image.load('covinv_docs/syringe.png'), (50, 50))
@@ -362,7 +363,7 @@ def collide(obj1, obj2):
 
 def main():
     run = True
-    level = 4
+    level = 2
     main_font = pygame.font.SysFont("timesnewroman", 20)
     lost_font = pygame.font.SysFont("timesnewroman", 30, bold=True)
     enemies = []
@@ -469,7 +470,7 @@ def main():
             lost = True
             stop()
         if level == 0:
-            level = text_screen(level, story1_img)
+            level = text_screen(level, story1_img, explosionImage, -300, -300)
         if level == 1:
             BG = jungle_BG
             if len(enemies) == 0:
@@ -510,7 +511,7 @@ def main():
                     enemies.remove(enemy)
             timer_freeze -= 1
             if wave == 2:
-                level = text_screen(level, story2_img)
+                level = text_screen(level, story2_img,jungle_BG, -300, -300)
                 wave = 0
                 wave_length = 10
                 enemies = []
@@ -539,7 +540,7 @@ def main():
                 bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), -100, randBonus)
                 bonuses.append(bonus)
             batBoss.move_bullets_pangolin(-bullet_vel, hero, invincible)
-            hero.move_bullets_vs_boss(-bullet_vel, batBoss,1)
+            hero.move_bullets_vs_boss(-bullet_vel, batBoss,25)
 
             for bonus in bonuses[:]:
                 bonus.move(bonus_vel)
@@ -556,7 +557,7 @@ def main():
                         timer_mask = 400
 
             if batBoss.health == 0:
-                level = text_screen(level, story3_img)
+                level = text_screen(level, story3_img,batcave_BG, batBoss.x, batBoss.y)
                 bossUS.health = 50
                 bonuses.clear()
                 hero.bullets.clear()
@@ -607,7 +608,7 @@ def main():
                     enemies.remove(enemy)
             timer_freeze -= 1
             if wave == 2:
-                level = text_screen(level, story4_img)
+                level = text_screen(level, story4_img,DC_BG, -300, -300)
                 wave = 0
                 wave_length = 10
                 enemies = []
@@ -655,7 +656,7 @@ def main():
                         timer_mask = 400
 
             if bossUS.health == 0:
-                level = text_screen(level, story5_img)
+                level = text_screen(level, story5_img,whitehouse_BG, bossUS.x, boss.y)
                 pangolinBoss.health = 50
                 bonuses.clear()
                 hero.bullets.clear()
@@ -761,7 +762,7 @@ def main():
                         timer_mask = 400
 
             if pangolinBoss.health <= 0:
-                level += 1
+                level = text_screen(level, story2_img,spacesun_BG, pangolinBoss.x, pangolinBoss.y)
         if level == 7:
             main_start()
 
@@ -793,10 +794,19 @@ def main():
         redraw_window()
 
 
-def text_screen(lvl, image):
+def text_screen(lvl, image, BG, x, y):
     pygame.init()
+    timer_explosion = 1000
     run = True
+    clear_font = pygame.font.SysFont("timesnewroman", 30, bold=True)
+    clear_label = clear_font.render("Level clear", 1, (255,255,255))
     while run:
+        while timer_explosion > 0:
+            WINDOW.blit(BG, (0,0))
+            WINDOW.blit(explosionImage, (x,y))
+            WINDOW.blit(clear_label, (WINDOW_WIDTH / 2 - clear_label.get_width() / 2, 280))
+            pygame.display.update()
+            timer_explosion -= 1
         WINDOW.blit(image, (0, 0))
         pygame.display.update()
         for event in pygame.event.get():
