@@ -50,8 +50,8 @@ angryBossUSImage = pygame.transform.scale(pygame.image.load('covinv_docs/ANGRY B
 pangolinImage = pygame.transform.scale(pygame.image.load('covinv_docs/pangolin.png'),
                                       (200, 150))
 
-pangolindefImage = pygame.transform.scale(pygame.image.load('covinv_docs/pangolin_en_boule.jpg'),
-                                      (180, 180))
+pangolindefImage = pygame.transform.scale(pygame.image.load('covinv_docs/pangolin_en_boule.png'),
+                                      (160, 160))
 
 
 maskImage = pygame.transform.scale(pygame.image.load('covinv_docs/medical-mask.png'), (50, 50))
@@ -66,8 +66,17 @@ startBGImage = pygame.transform.scale(pygame.image.load('covinv_docs/phototest.j
 
 jungle_BG = pygame.transform.scale(pygame.image.load('covinv_docs/test_BG.jpg'),
                                    (WINDOW_WIDTH, WINDOW_HEIGHT))
-screen_test_BG = pygame.transform.scale(pygame.image.load('covinv_docs/Story 1.1 .png'),
+story1_img = pygame.transform.scale(pygame.image.load('covinv_docs/Story 1.1 .png'),
                                    (WINDOW_WIDTH, WINDOW_HEIGHT))
+story2_img = pygame.transform.scale(pygame.image.load('covinv_docs/Story 2.1 .png'),
+                                   (WINDOW_WIDTH, WINDOW_HEIGHT))
+story3_img = pygame.transform.scale(pygame.image.load('covinv_docs/Story 3.1 .png'),
+                                   (WINDOW_WIDTH, WINDOW_HEIGHT))
+story4_img = pygame.transform.scale(pygame.image.load('covinv_docs/Story 4.1 .png'),
+                                   (WINDOW_WIDTH, WINDOW_HEIGHT))
+story5_img = pygame.transform.scale(pygame.image.load('covinv_docs/Story 5.1 .png'),
+                                   (WINDOW_WIDTH, WINDOW_HEIGHT))
+
 
 class Falling:
     def __init__(self, x, y):
@@ -167,7 +176,7 @@ class Boss(Character):
         for bullet in self.bullets:
             bullet.draw(window)
 
-    def move_bullets(self, vel, hero, invincible):
+    def move_bullets_BossUS(self, vel, hero, invincible):
         for bullet in self.bullets:
             bullet.move(-vel)
             if bullet.off_screen(WINDOW_HEIGHT):
@@ -180,7 +189,7 @@ class Boss(Character):
                     if bullet in self.bullets:
                         self.bullets.remove(bullet)
 
-    def move_bullets2(self, vel, hero, invincible):
+    def move_bullets_pangolin(self, vel, hero, invincible):
         for bullet in self.bullets:
             bullet.move_pangolin(-vel)
             if bullet.off_screen(WINDOW_HEIGHT):
@@ -188,7 +197,19 @@ class Boss(Character):
             else:
                 if bullet.collides_with(hero):
                     if not invincible:
-                        if hero.lives - 1 > 0:
+                        if hero.lives - 1 >= 0:
+                            hero.lives -= 1
+                    if bullet in self.bullets:
+                        self.bullets.remove(bullet)
+    def move_bullets_batBoss(self, vel, hero, invincible):
+        for bullet in self.bullets:
+            bullet.move_pangolin(-vel)
+            if bullet.off_screen(WINDOW_HEIGHT):
+                self.bullets.remove(bullet)
+            else:
+                if bullet.collides_with(hero):
+                    if not invincible:
+                        if hero.lives - 1 >= 0:
                             hero.lives -= 1
                     if bullet in self.bullets:
                         self.bullets.remove(bullet)
@@ -197,12 +218,12 @@ class Boss(Character):
         pygame.draw.rect(window, (255, 0, 0), (self.x + 50, self.y, 100, 8))
         pygame.draw.rect(window, (0, 255, 0), (self.x + 50, self.y, (100) * self.health / self.maxhealth, 8))
 
-    def shoot(self):
+    def shoot_BossUS(self):
         boss_ammo = Bullet(random.choice([self.x , self.x + 150]), self.y - 100 + self.boss_img.get_height(), self.bullet_img)
         self.bullets.append(boss_ammo)
 
-    def shoot2(self):
-        boss_ammo = Bullet(self.x + 100, self.y + 100, self.bullet_img)
+    def shoot_Pangolin(self):
+        boss_ammo = Bullet(self.x + self.boss_img.get_width()/2 - 40, self.y + 100, self.bullet_img)
         self.bullets.append(boss_ammo)
 
     def move(self, vel):
@@ -238,7 +259,7 @@ class Hero(Character):
         self.hero_img = heroImage
         self.mask = pygame.mask.from_surface(self.hero_img)
         self.bullet_img = drop_img
-        self.lives = 50
+        self.lives = 3
         self.level = 0
 
     def draw(self, window):
@@ -261,14 +282,15 @@ class Hero(Character):
                         if bullet in self.bullets:
                             self.bullets.remove(bullet)
 
-    def move_bullets_vs_boss(self, vel, boss):
+    def move_bullets_vs_boss(self, vel, boss, dmg):
         for bullet in self.bullets:
             bullet.move(vel)
             if bullet.off_screen(WINDOW_HEIGHT):
                 self.bullets.remove(bullet)
             else:
                 if bullet.collides_with(boss):
-                    boss.health -= 1
+                    if boss.boss_img != pangolindefImage:
+                        boss.health -= dmg
                     self.bullets.remove(bullet)
 
     def shoot(self):
@@ -338,6 +360,8 @@ def main():
     timer_ammo = 0
     timer_freeze = 0
     timer_mask = 0
+    timer_pangolin = 0
+    timer_pangolin_def = 0
     wave = 0
     virus_vel = 1
     bonus_vel = 2
@@ -348,6 +372,7 @@ def main():
     hero = Hero(300, 500)
     batBoss = Boss(200, 0)
     bossUS = Boss(200, 0)
+    pangolinBoss = Boss(200,0)
 
     clock = pygame.time.Clock()
     lost = False
@@ -401,8 +426,10 @@ def main():
         hero.draw(WINDOW)
         if level == 2:
             batBoss.draw(WINDOW)
-        if level == 3:
+        if level == 4:
             bossUS.draw(WINDOW)
+        if level == 6:
+            pangolinBoss.draw(WINDOW)
         pygame.display.update()
 
     hero_cooldown = 0
@@ -428,6 +455,8 @@ def main():
         if hero.lives <= 0:
             lost = True
             stop()
+        if level == 0:
+            level = text_screen(level, story1_img)
         if level == 1:
             BG = startBGImage
             if len(enemies) == 0:
@@ -468,10 +497,17 @@ def main():
                     enemies.remove(enemy)
             timer_freeze -= 1
             if wave == 2:
-                level = text_screen(level, screen_test_BG)
+                level = text_screen(level, story2_img)
                 wave = 0
+                wave_length = 10
                 bonuses.clear()
-                boss_cooldown = 0
+                hero.bullets.clear()
+                hero.lives = 3
+                timer_trav_cert = 0
+                timer_ammo = 0
+                timer_freeze = 0
+                timer_mask = 0
+
         if level == 2:
             boss_cooldown += 1
             BG = jungle_BG
@@ -479,17 +515,17 @@ def main():
             if batBoss.health > 25:
                 batBoss.move(boss_vel)
                 if boss_cooldown % 100 == 0:
-                    batBoss.shoot2()
+                    batBoss.shoot_Pangolin()
             else:
                 batBoss.move(boss_vel * 2)
                 if boss_cooldown % 50 == 0:
-                    batBoss.shoot2()
+                    batBoss.shoot_Pangolin()
             if boss_cooldown % 650 == 0:
                 randBonus = random.choice(["ammo","trav_cert", "vaccine","mask"])
                 bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), -100, randBonus)
                 bonuses.append(bonus)
-            batBoss.move_bullets2(-bullet_vel, hero, invincible)
-            hero.move_bullets_vs_boss(-bullet_vel, batBoss)
+            batBoss.move_bullets_pangolin(-bullet_vel, hero, invincible)
+            hero.move_bullets_vs_boss(-bullet_vel, batBoss,1)
 
             for bonus in bonuses[:]:
                 bonus.move(bonus_vel)
@@ -506,30 +542,88 @@ def main():
                         timer_mask = 400
 
             if batBoss.health == 0:
-                level += 1
+                level = text_screen(level, story3_img)
                 bossUS.health = 50
                 bonuses.clear()
+                hero.bullets.clear()
+                boss_cooldown = 0
+                hero.lives = 3
+                timer_trav_cert = 0
+                timer_ammo = 0
+                timer_freeze = 0
+                timer_mask = 0
 
         if level == 3:
+            BG = startBGImage
+            if len(enemies) == 0:
+                wave += 1
+                wave_length += 5
+                if wave < 5:
+                    randBonus = random.choice(["freeze", "vaccine", "trav_cert", "ammo"])
+                    bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1700, -1300), randBonus)
+                    bonuses.append(bonus)
+                    for i in range(wave_length):
+                        randVirus = random.choice(["red", "green", "blue"])
+                        enemy = Colorvirus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1200, -300),
+                                           randVirus,
+                                           randVirus)
+                        enemies.append(enemy)
+
+            for bonus in bonuses[:]:
+                bonus.move(bonus_vel)
+                if bonus.touches(hero) or bonus.y + bonus.bonus_img.get_height() > WINDOW_HEIGHT:
+                    bonuses.remove(bonus)
+                if bonus.touches(hero):
+                    if bonus.bonus_num == "vaccine":
+                        hero.lives += 1
+                    elif bonus.bonus_num == "trav_cert":
+                        timer_trav_cert = 500
+                    elif bonus.bonus_num == "ammo":
+                        timer_ammo = 500
+                    elif bonus.bonus_num == "freeze":
+                        timer_freeze = 300
+
+            for enemy in enemies[:]:
+                if timer_freeze <= 0:
+                    enemy.move(virus_vel)
+                else:
+                    enemy.move(0)
+                if enemy.y + enemy.virus_img.get_height() > WINDOW_HEIGHT - 150:
+                    hero.lives -= 1
+                    enemies.remove(enemy)
+            timer_freeze -= 1
+            if wave == 2:
+                level = text_screen(level, story4_img)
+                wave = 0
+                wave_length = 10
+                bonuses.clear()
+                hero.bullets.clear()
+                hero.lives = 3
+                timer_trav_cert = 0
+                timer_ammo = 0
+                timer_freeze = 0
+                timer_mask = 0
+
+        if level == 4:
             boss_cooldown += 1
             BG = startBGImage
 
             if bossUS.health > 25:
                 bossUS.boss_img = bossUSImage
                 bossUS.move(boss_vel)
-                if boss_cooldown % 100 == 0:
-                    bossUS.shoot()
+                if boss_cooldown % 60 == 0:
+                    bossUS.shoot_BossUS()
             else:
                 bossUS.boss_img = angryBossUSImage
                 bossUS.move(boss_vel * 2)
-                if boss_cooldown % 50 == 0:
-                    bossUS.shoot()
+                if boss_cooldown % 30 == 0:
+                    bossUS.shoot_BossUS()
             if boss_cooldown % 650 == 0:
                 randBonus = random.choice(["ammo","trav_cert", "vaccine","mask"])
                 bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), -100, randBonus)
                 bonuses.append(bonus)
-            bossUS.move_bullets(-bullet_vel, hero, invincible)
-            hero.move_bullets_vs_boss(-bullet_vel, bossUS)
+            bossUS.move_bullets_BossUS(-bullet_vel, hero, invincible)
+            hero.move_bullets_vs_boss(-bullet_vel, bossUS,0.5)
 
             for bonus in bonuses[:]:
                 bonus.move(bonus_vel)
@@ -546,11 +640,111 @@ def main():
                         timer_mask = 400
 
             if bossUS.health == 0:
-                level += 1
-                batBoss.health = 50
+                level = text_screen(level, story5_img)
+                pangolinBoss.health = 50
                 bonuses.clear()
+                hero.bullets.clear()
+                boss_cooldown = 0
+                hero.lives = 3
+                timer_trav_cert = 0
+                timer_ammo = 0
+                timer_freeze = 0
+                timer_mask = 0
 
-        if level == 4:
+        if level == 5:
+            BG = startBGImage
+            if len(enemies) == 0:
+                wave += 1
+                wave_length += 5
+                if wave < 5:
+                    randBonus = random.choice(["freeze", "vaccine", "trav_cert", "ammo"])
+                    bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1700, -1300), randBonus)
+                    bonuses.append(bonus)
+                    for i in range(wave_length):
+                        randVirus = random.choice(["red", "green", "blue", "purple"])
+                        enemy = Colorvirus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1200, -300),
+                                           randVirus,
+                                           randVirus)
+                        enemies.append(enemy)
+
+            for bonus in bonuses[:]:
+                bonus.move(bonus_vel)
+                if bonus.touches(hero) or bonus.y + bonus.bonus_img.get_height() > WINDOW_HEIGHT:
+                    bonuses.remove(bonus)
+                if bonus.touches(hero):
+                    if bonus.bonus_num == "vaccine":
+                        hero.lives += 1
+                    elif bonus.bonus_num == "trav_cert":
+                        timer_trav_cert = 500
+                    elif bonus.bonus_num == "ammo":
+                        timer_ammo = 500
+                    elif bonus.bonus_num == "freeze":
+                        timer_freeze = 300
+
+            for enemy in enemies[:]:
+                if timer_freeze <= 0:
+                    enemy.move(virus_vel)
+                else:
+                    enemy.move(0)
+                if enemy.y + enemy.virus_img.get_height() > WINDOW_HEIGHT - 150:
+                    hero.lives -= 1
+                    enemies.remove(enemy)
+            timer_freeze -= 1
+            if wave == 2:
+                level = text_screen(level, story2_img)
+                wave = 0
+                wave_length = 10
+                bonuses.clear()
+                hero.bullets.clear()
+                hero.lives = 3
+                timer_trav_cert = 0
+                timer_ammo = 0
+                timer_freeze = 0
+                timer_mask = 0
+
+        if level == 6:
+            boss_cooldown += 1
+            BG = startBGImage
+
+            if timer_pangolin <= 400:
+                timer_pangolin += 1
+                pangolinBoss.boss_img = pangolinImage
+                pangolinBoss.move(boss_vel*2)
+                if boss_cooldown % 70 == 0:
+                    pangolinBoss.shoot_Pangolin()
+            else:
+                timer_pangolin_def += 1
+                pangolinBoss.boss_img = pangolindefImage
+                if boss_cooldown % 30 == 0:
+                    pangolinBoss.shoot_Pangolin()
+                if timer_pangolin_def == 300:
+                    timer_pangolin = 0
+                    timer_pangolin_def = 0
+
+            if boss_cooldown % 650 == 0:
+                randBonus = random.choice(["ammo","trav_cert", "vaccine","mask"])
+                bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), -100, randBonus)
+                bonuses.append(bonus)
+            pangolinBoss.move_bullets_pangolin(-bullet_vel, hero, invincible)
+            hero.move_bullets_vs_boss(-bullet_vel, pangolinBoss, 0.33)
+
+            for bonus in bonuses[:]:
+                bonus.move(bonus_vel)
+                if bonus.touches(hero) or bonus.y + bonus.bonus_img.get_height() > WINDOW_HEIGHT:
+                    bonuses.remove(bonus)
+                if bonus.touches(hero):
+                    if bonus.bonus_num == "vaccine":
+                        hero.lives += 1
+                    elif bonus.bonus_num == "trav_cert":
+                        timer_trav_cert = 500
+                    elif bonus.bonus_num == "ammo":
+                        timer_ammo = 300
+                    elif bonus.bonus_num == "mask":
+                        timer_mask = 400
+
+            if pangolinBoss.health <= 0:
+                level += 1
+        if level == 7:
             main_start()
 
         for event in pygame.event.get():
@@ -579,6 +773,7 @@ def main():
         hero.move_bullets(-bullet_vel, enemies)
 
         redraw_window()
+
 
 def text_screen(lvl, image):
     pygame.init()
