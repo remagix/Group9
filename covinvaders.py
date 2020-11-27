@@ -62,7 +62,7 @@ travCertImage = pygame.transform.scale(pygame.image.load('covinv_docs/certificat
 freezingImage = pygame.transform.scale(pygame.image.load('covinv_docs/freezing.png'), (40, 40))
 
 
-startBGImage = pygame.transform.scale(pygame.image.load('covinv_docs/phototest.jpg'),
+startBGImage = pygame.transform.scale(pygame.image.load('covinv_docs/espace2.jpg'),
                                       (WINDOW_WIDTH, WINDOW_HEIGHT))
 
 jungle_BG = pygame.transform.scale(pygame.image.load('covinv_docs/test_BG.jpg'),
@@ -202,6 +202,7 @@ class Boss(Character):
                             hero.lives -= 1
                     if bullet in self.bullets:
                         self.bullets.remove(bullet)
+
     def move_bullets_batBoss(self, vel, hero, invincible):
         for bullet in self.bullets:
             bullet.move_pangolin(-vel)
@@ -220,7 +221,8 @@ class Boss(Character):
         pygame.draw.rect(window, (0, 255, 0), (self.x + 50, self.y, (100) * self.health / self.maxhealth, 8))
 
     def shoot_BossUS(self):
-        boss_ammo = Bullet(random.choice([self.x , self.x + 150]), self.y - 100 + self.boss_img.get_height(), self.bullet_img)
+        boss_ammo = Bullet(random.choice([self.x , self.x + 150]), self.y - 100 + self.boss_img.get_height(),
+                           self.bullet_img)
         self.bullets.append(boss_ammo)
 
     def shoot_Pangolin(self):
@@ -351,7 +353,7 @@ def collide(obj1, obj2):
 
 def main():
     run = True
-    level = 6
+    level = 0
     main_font = pygame.font.SysFont("timesnewroman", 20)
     lost_font = pygame.font.SysFont("timesnewroman", 30, bold=True)
     enemies = []
@@ -432,6 +434,7 @@ def main():
             bossUS.draw(WINDOW)
         if level == 6:
             pangolinBoss.draw(WINDOW)
+
         pygame.display.update()
 
     hero_cooldown = 0
