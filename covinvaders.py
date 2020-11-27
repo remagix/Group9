@@ -39,6 +39,8 @@ HP_PURPLE = 5
 
 heroImage = pygame.transform.scale(pygame.image.load('covinv_docs/samus.png'), (70, 90))
 
+rocketHeroImage = pygame.transform.scale(pygame.image.load('covinv_docs/rocket.png'), (70, 90))
+
 batBossImage = pygame.transform.scale(pygame.image.load('covinv_docs/pngegg.png'),
                                       (200, 140))
 
@@ -66,7 +68,7 @@ startBGImage = pygame.transform.scale(pygame.image.load('covinv_docs/phototest.j
                                       (WINDOW_WIDTH, WINDOW_HEIGHT))
 jungle_BG = pygame.transform.scale(pygame.image.load('covinv_docs/test_BG.jpg'),
                                    (WINDOW_WIDTH, WINDOW_HEIGHT))
-batcav_BG = pygame.transform.scale(pygame.image.load('covinv_docs/bat_cave.jpeg'),
+batcave_BG = pygame.transform.scale(pygame.image.load('covinv_docs/bat_cave.jpeg'),
                                    (WINDOW_WIDTH, WINDOW_HEIGHT))
 DC_BG = pygame.transform.scale(pygame.image.load('covinv_docs/DC_landscape.jpeg'),
                                    (WINDOW_WIDTH, WINDOW_HEIGHT))
@@ -360,7 +362,7 @@ def collide(obj1, obj2):
 
 def main():
     run = True
-    level = 6
+    level = 4
     main_font = pygame.font.SysFont("timesnewroman", 20)
     lost_font = pygame.font.SysFont("timesnewroman", 30, bold=True)
     enemies = []
@@ -522,7 +524,7 @@ def main():
 
         if level == 2:
             boss_cooldown += 1
-            BG = batcav_BG
+            BG = batcave_BG
 
             if batBoss.health > 25:
                 batBoss.move(boss_vel)
@@ -666,6 +668,7 @@ def main():
 
         if level == 5:
             BG = space_BG
+            hero.hero_img = rocketHeroImage
             if len(enemies) == 0:
                 wave += 1
                 wave_length += 5
@@ -717,6 +720,7 @@ def main():
                 timer_mask = 0
 
         if level == 6:
+            hero.hero_img = rocketHeroImage
             boss_cooldown += 1
             BG = spacesun_BG
 
