@@ -494,9 +494,19 @@ def main():
                     bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1700, -1300), randBonus)
                     bonuses.append(bonus)
                 else:
-                    for i in range(2):
+                    if wave < 3:
                         randBonus = random.choice(["freeze", "vaccine", "trav_cert", "ammo"])
-                        bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1400, -1200), randBonus)
+                        bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1700, -1300),
+                                      randBonus)
+                        bonuses.append(bonus)
+                    else:
+                        randBonus = random.choice(["freeze", "vaccine", "trav_cert", "ammo"])
+                        bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1900, -1700),
+                                      randBonus)
+                        bonuses.append(bonus)
+                        randBonus = random.choice(["freeze", "vaccine", "trav_cert", "ammo"])
+                        bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1400, -1200),
+                                      randBonus)
                         bonuses.append(bonus)
                 for i in range(wave_length):
                     randVirus = random.choice(["red", "green"])
@@ -600,16 +610,25 @@ def main():
             if len(enemies) == 0:
                 wave += 1
                 wave_length += 5
-                if wave < 5:
+                if wave < 3:
                     randBonus = random.choice(["freeze", "vaccine", "trav_cert", "ammo"])
                     bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1700, -1300), randBonus)
                     bonuses.append(bonus)
-                    for i in range(wave_length):
-                        randVirus = random.choice(["red", "green", "blue"])
-                        enemy = Colorvirus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1200, -300),
-                                           randVirus,
-                                           randVirus)
-                        enemies.append(enemy)
+                else:
+                    randBonus = random.choice(["freeze", "vaccine", "trav_cert", "ammo"])
+                    bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1900, -1700),
+                                  randBonus)
+                    bonuses.append(bonus)
+                    randBonus = random.choice(["freeze", "vaccine", "trav_cert", "ammo"])
+                    bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1400, -1200),
+                                  randBonus)
+                    bonuses.append(bonus)
+                for i in range(wave_length):
+                    randVirus = random.choice(["red", "green", "blue"])
+                    enemy = Colorvirus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1200, -300),
+                                       randVirus,
+                                       randVirus)
+                    enemies.append(enemy)
 
             for bonus in bonuses[:]:
                 bonus.move(bonus_vel)
@@ -707,16 +726,25 @@ def main():
             if len(enemies) == 0:
                 wave += 1
                 wave_length += 5
-                if wave < 5:
+                if wave < 3:
                     randBonus = random.choice(["freeze", "vaccine", "trav_cert", "ammo"])
                     bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1700, -1300), randBonus)
                     bonuses.append(bonus)
-                    for i in range(wave_length):
-                        randVirus = random.choice(["red", "green", "blue", "purple"])
-                        enemy = Colorvirus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1200, -300),
-                                           randVirus,
-                                           randVirus)
-                        enemies.append(enemy)
+                else:
+                    randBonus = random.choice(["freeze", "vaccine", "trav_cert", "ammo"])
+                    bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1900, -1700),
+                                  randBonus)
+                    bonuses.append(bonus)
+                    randBonus = random.choice(["freeze", "vaccine", "trav_cert", "ammo"])
+                    bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1400, -1200),
+                                  randBonus)
+                    bonuses.append(bonus)
+                for i in range(wave_length):
+                    randVirus = random.choice(["red", "green", "blue", "purple"])
+                    enemy = Colorvirus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1200, -300),
+                                       randVirus,
+                                       randVirus)
+                    enemies.append(enemy)
 
             for bonus in bonuses[:]:
                 bonus.move(bonus_vel)
