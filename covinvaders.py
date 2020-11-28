@@ -623,12 +623,12 @@ def main():
                     bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1400, -1200),
                                   randBonus)
                     bonuses.append(bonus)
-                    for i in range(wave_length):
-                        randVirus = random.choice(["red", "green", "blue"])
-                        enemy = Colorvirus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1200, -300),
-                                           randVirus,
-                                           randVirus)
-                        enemies.append(enemy)
+                for i in range(wave_length):
+                    randVirus = random.choice(["red", "green", "blue"])
+                    enemy = Colorvirus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1200, -300),
+                                       randVirus,
+                                       randVirus)
+                    enemies.append(enemy)
 
             for bonus in bonuses[:]:
                 bonus.move(bonus_vel)
@@ -739,12 +739,12 @@ def main():
                     bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1400, -1200),
                                   randBonus)
                     bonuses.append(bonus)
-                    for i in range(wave_length):
-                        randVirus = random.choice(["red", "green", "blue", "purple"])
-                        enemy = Colorvirus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1200, -300),
-                                           randVirus,
-                                           randVirus)
-                        enemies.append(enemy)
+                for i in range(wave_length):
+                    randVirus = random.choice(["red", "green", "blue", "purple"])
+                    enemy = Colorvirus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1200, -300),
+                                       randVirus,
+                                       randVirus)
+                    enemies.append(enemy)
 
             for bonus in bonuses[:]:
                 bonus.move(bonus_vel)
