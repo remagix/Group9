@@ -29,9 +29,10 @@ purpleVirusImage = pygame.transform.scale(pygame.image.load('covinv_docs/purple_
 
 drop_img = pygame.transform.scale(pygame.image.load('covinv_docs/drop.png'), (20, 20))
 pangbat_img = pygame.transform.scale(pygame.image.load('covinv_docs/missilelittlebat.png'), (80, 80))
-batfire_img = pygame.transform.scale(pygame.image.load('covinv_docs/missilelittlebat.png'), (80, 80)) #a changer
+batgrnfire_img = pygame.transform.scale(pygame.image.load('covinv_docs/grnfire.png'), (80, 80))
+batredfire_img = pygame.transform.scale(pygame.image.load('covinv_docs/redfire.png'), (80, 80))
 bulletUS_img = pygame.transform.scale(pygame.image.load('covinv_docs/bulletUS.png'), (80, 80))
-nukeUS_img = pygame.transform.scale(pygame.image.load('covinv_docs/bulletUS.png'), (80, 80)) #a changer
+nukeUS_img = pygame.transform.scale(pygame.image.load('covinv_docs/nukeUS.png'), (80, 80))
 
 HP_RED = 2
 HP_GREEN = 3
@@ -388,7 +389,7 @@ def main():
 
     hero = Hero(300, 500)
     batBoss = Boss(200, 0)
-    batBoss.bullet_img = batfire_img
+    batBoss.bullet_img = batredfire_img
     bossUS = Boss(200, 0)
     bossUS.bullet_img = bulletUS_img
     pangolinBoss = Boss(200,0)
@@ -553,6 +554,7 @@ def main():
                 if boss_cooldown % 100 == 0:
                     batBoss.shoot_Pangolin()
             else:
+                batBoss.bullet_img = batgrnfire_img
                 batBoss.move(boss_vel * 2)
                 if boss_cooldown % 50 == 0:
                     batBoss.shoot_Pangolin()
