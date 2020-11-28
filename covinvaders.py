@@ -84,17 +84,18 @@ space_BG = pygame.transform.scale(pygame.image.load('covinv_docs/earth.jpg'),
                                    (WINDOW_WIDTH, WINDOW_HEIGHT))
 spacesun_BG = pygame.transform.scale(pygame.image.load('covinv_docs/sun_pango (2).jpg'),
                                    (WINDOW_WIDTH, WINDOW_HEIGHT))
-story1_img = pygame.transform.scale(pygame.image.load('covinv_docs/Story 1.1 .png'),
+story1_img = pygame.transform.scale(pygame.image.load('covinv_docs/StartBG 1.jpg'),
                                    (WINDOW_WIDTH, WINDOW_HEIGHT))
-story2_img = pygame.transform.scale(pygame.image.load('covinv_docs/Story 2.1 .png'),
+story2_img = pygame.transform.scale(pygame.image.load('covinv_docs/StartBG 2.jpg'),
                                    (WINDOW_WIDTH, WINDOW_HEIGHT))
-story3_img = pygame.transform.scale(pygame.image.load('covinv_docs/Story 3.1 .png'),
+story3_img = pygame.transform.scale(pygame.image.load('covinv_docs/StartBG 3.jpg'),
                                    (WINDOW_WIDTH, WINDOW_HEIGHT))
-story4_img = pygame.transform.scale(pygame.image.load('covinv_docs/Story 4.1 .png'),
+story4_img = pygame.transform.scale(pygame.image.load('covinv_docs/StartBG 4.jpg'),
                                    (WINDOW_WIDTH, WINDOW_HEIGHT))
-story5_img = pygame.transform.scale(pygame.image.load('covinv_docs/Story 5.1 .png'),
+story5_img = pygame.transform.scale(pygame.image.load('covinv_docs/StartBG 5.jpg'),
                                    (WINDOW_WIDTH, WINDOW_HEIGHT))
-
+story6_img = pygame.transform.scale(pygame.image.load('covinv_docs/StartBG 6.jpg'),
+                                   (WINDOW_WIDTH, WINDOW_HEIGHT))
 
 class Falling:
     def __init__(self, x, y):
