@@ -29,9 +29,9 @@ purpleVirusImage = pygame.transform.scale(pygame.image.load('covinv_docs/purple_
 
 drop_img = pygame.transform.scale(pygame.image.load('covinv_docs/drop.png'), (20, 20))
 pangbat_img = pygame.transform.scale(pygame.image.load('covinv_docs/missilelittlebat.png'), (80, 80))
-batfire_img = pygame.transform.scale(pygame.image.load('covinv_docs/greenfire.png'), (80, 80))
+batfire_img = pygame.transform.scale(pygame.image.load('covinv_docs/missilelittlebat.png'), (80, 80)) #a changer
 bulletUS_img = pygame.transform.scale(pygame.image.load('covinv_docs/bulletUS.png'), (80, 80))
-nukeUS_img = pygame.transform.scale(pygame.image.load('covinv_docs/nuke.png'), (80, 80))
+nukeUS_img = pygame.transform.scale(pygame.image.load('covinv_docs/bulletUS.png'), (80, 80)) #a changer
 
 HP_RED = 2
 HP_GREEN = 3
@@ -367,7 +367,7 @@ def collide(obj1, obj2):
 
 def main():
     run = True
-    level = 5
+    level = 0
     main_font = pygame.font.SysFont("timesnewroman", 20)
     lost_font = pygame.font.SysFont("timesnewroman", 30, bold=True)
     enemies = []
