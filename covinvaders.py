@@ -28,8 +28,10 @@ purpleVirusImage = pygame.transform.scale(pygame.image.load('covinv_docs/purple_
 
 
 drop_img = pygame.transform.scale(pygame.image.load('covinv_docs/drop.png'), (20, 20))
-batmissile_img = pygame.transform.scale(pygame.image.load('covinv_docs/missilelittlebat.png'), (80, 80))
-
+pangbat_img = pygame.transform.scale(pygame.image.load('covinv_docs/missilelittlebat.png'), (80, 80))
+batfire_img = pygame.transform.scale(pygame.image.load('covinv_docs/greenfire.png'), (80, 80))
+bulletUS_img = pygame.transform.scale(pygame.image.load('covinv_docs/bulletUS.png'), (80, 80))
+nukeUS_img = pygame.transform.scale(pygame.image.load('covinv_docs/nuke.png'), (80, 80))
 
 HP_RED = 2
 HP_GREEN = 3
@@ -40,6 +42,8 @@ HP_PURPLE = 5
 heroImage = pygame.transform.scale(pygame.image.load('covinv_docs/samus.png'), (70, 90))
 
 rocketHeroImage = pygame.transform.scale(pygame.image.load('covinv_docs/rocket.png'), (70, 90))
+
+invincibleHeroImage = pygame.transform.scale(pygame.image.load('covinv_docs/invincible.png'), (70, 90))
 
 batBossImage = pygame.transform.scale(pygame.image.load('covinv_docs/pngegg.png'),
                                       (200, 140))
@@ -177,7 +181,7 @@ class Boss(Character):
         super(Boss, self).__init__(x, y)
         self.boss_img = batBossImage
         self.mask = pygame.mask.from_surface(self.boss_img)
-        self.bullet_img = batmissile_img
+        self.bullet_img = None
         self.bullets = []
         self.maxhealth = 50
         self.health = 50
@@ -384,8 +388,11 @@ def main():
 
     hero = Hero(300, 500)
     batBoss = Boss(200, 0)
+    batBoss.bullet_img = batfire_img
     bossUS = Boss(200, 0)
+    bossUS.bullet_img = bulletUS_img
     pangolinBoss = Boss(200,0)
+    pangolinBoss.bullet_img = pangbat_img
 
     clock = pygame.time.Clock()
     lost = False
@@ -459,7 +466,7 @@ def main():
         else:
             invincible = True
             timer_mask -= 1
-            hero.hero_img = redVirusImage
+            hero.hero_img = invincibleHeroImage
 
         if timer_trav_cert <= 0:
             hero_vel = 5
@@ -571,7 +578,7 @@ def main():
                         timer_mask = 400
 
             if batBoss.health == 0:
-                level = text_screen(level, story3_img,batcave_BG, batBoss.x, batBoss.y)
+                level = text_screen(level, story3_img, BG, batBoss.x, batBoss.y)
 
                 pygame.mixer.music.load('covinv_docs/invaders.mp3')
                 pygame.mixer.music.play(-1, 0, 0)
@@ -626,10 +633,11 @@ def main():
                     enemies.remove(enemy)
             timer_freeze -= 1
             if wave == 5:
-                level = text_screen(level, story4_img,DC_BG, -300, -300)
+                level = text_screen(level, story4_img, BG, -300, -300)
 
                 pygame.mixer.music.load('covinv_docs/brawl.mp3')
                 pygame.mixer.music.play(-1, 0, 0)
+
                 wave = 0
                 wave_length = 10
                 enemies = []
@@ -652,6 +660,7 @@ def main():
                     bossUS.shoot_BossUS()
             else:
                 bossUS.boss_img = angryBossUSImage
+                bossUS.bullet_img = nukeUS_img
                 bossUS.move(boss_vel * 2)
                 if boss_cooldown % 30 == 0:
                     bossUS.shoot_BossUS()
@@ -660,7 +669,7 @@ def main():
                 bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), -100, randBonus)
                 bonuses.append(bonus)
             bossUS.move_bullets_BossUS(-bullet_vel, hero, invincible)
-            hero.move_bullets_vs_boss(-bullet_vel, bossUS,0.5)
+            hero.move_bullets_vs_boss(-bullet_vel, bossUS, 0.5)
 
             for bonus in bonuses[:]:
                 bonus.move(bonus_vel)
@@ -677,7 +686,7 @@ def main():
                         timer_mask = 400
 
             if bossUS.health == 0:
-                level = text_screen(level, story5_img,whitehouse_BG, bossUS.x, bossUS.y)
+                level = text_screen(level, story5_img, BG, bossUS.x, bossUS.y)
                 pygame.mixer.music.load('covinv_docs/melee.mp3')
                 pygame.mixer.music.play(-1, 0, 0)
                 pangolinBoss.health = 50
@@ -731,7 +740,7 @@ def main():
                     enemies.remove(enemy)
             timer_freeze -= 1
             if wave == 2:
-                level = text_screen(level, story2_img, space_BG, -300,-300)
+                level = text_screen(level, story2_img, BG, -300,-300)
 
                 pygame.mixer.music.load('covinv_docs/ofortuna.mp3')
                 pygame.mixer.music.play(-1, 0, 0)
@@ -789,7 +798,7 @@ def main():
                         timer_mask = 400
 
             if pangolinBoss.health <= 0:
-                level = text_screen(level, story2_img,spacesun_BG, pangolinBoss.x, pangolinBoss.y)
+                level = text_screen(level, story2_img, BG, pangolinBoss.x, pangolinBoss.y)
                 pygame.mixer.music.load('covinv_docs/ofortuna.mp3')
         if level == 7:
             main_start()
@@ -857,9 +866,6 @@ def main_start():
     title_font = pygame.font.SysFont("comicsans", 30)
     pygame.mixer.music.play(-1, 0, 0)
     while run:
-        #absolument faire une fonction pour les screen genre drawTextScreen(BG_img) pour chaque ecran
-        #ou il faut appuyer pour continuer
-        #et aussi une fonction pour tout les event.type pour quitter le jeu !
         WINDOW.blit(startBGImage, (0, 0))
         title_label = title_font.render("Press any key to go to war...", 1, (255, 255, 255))
         WINDOW.blit(title_label, (WINDOW_WIDTH / 2 - title_label.get_width() / 2, 350))
