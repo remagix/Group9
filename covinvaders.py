@@ -272,7 +272,7 @@ class Hero(Character):
         self.hero_img = heroImage
         self.mask = pygame.mask.from_surface(self.hero_img)
         self.bullet_img = drop_img
-        self.lives = 100
+        self.lives = 3
         self.level = 0
 
     def draw(self, window):
@@ -363,7 +363,7 @@ def collide(obj1, obj2):
 
 def main():
     run = True
-    level = 3
+    level = 0
     main_font = pygame.font.SysFont("timesnewroman", 20)
     lost_font = pygame.font.SysFont("timesnewroman", 30, bold=True)
     enemies = []
@@ -480,17 +480,22 @@ def main():
             BG = jungle_BG
             if len(enemies) == 0:
                 wave += 1
-                wave_length += 5
-                if wave < 5:
+                wave_length += 1
+                if wave < 3:
                     randBonus = random.choice(["freeze", "vaccine", "trav_cert", "ammo"])
                     bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1700, -1300), randBonus)
                     bonuses.append(bonus)
-                    for i in range(wave_length):
-                        randVirus = random.choice(["red", "green"])
-                        enemy = Colorvirus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1200, -300),
-                                           randVirus,
-                                           randVirus)
-                        enemies.append(enemy)
+                else:
+                    for i in range(2):
+                        randBonus = random.choice(["freeze", "vaccine", "trav_cert", "ammo"])
+                        bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1400, -1200), randBonus)
+                        bonuses.append(bonus)
+                for i in range(wave_length):
+                    randVirus = random.choice(["red", "green"])
+                    enemy = Colorvirus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1200, -300),
+                                       randVirus,
+                                       randVirus)
+                    enemies.append(enemy)
 
             for bonus in bonuses[:]:
                 bonus.move(bonus_vel)
