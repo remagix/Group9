@@ -272,7 +272,7 @@ class Hero(Character):
         self.hero_img = heroImage
         self.mask = pygame.mask.from_surface(self.hero_img)
         self.bullet_img = drop_img
-        self.lives = 3
+        self.lives = 50
         self.level = 0
 
     def draw(self, window):
@@ -363,7 +363,7 @@ def collide(obj1, obj2):
 
 def main():
     run = True
-    level = 0
+    level = 5
     main_font = pygame.font.SysFont("timesnewroman", 20)
     lost_font = pygame.font.SysFont("timesnewroman", 30, bold=True)
     enemies = []
@@ -731,7 +731,7 @@ def main():
                     enemies.remove(enemy)
             timer_freeze -= 1
             if wave == 2:
-                level = text_screen(level, story2_img)
+                level = text_screen(level, story2_img, space_BG, -300,-300)
 
                 pygame.mixer.music.load('covinv_docs/ofortuna.mp3')
                 pygame.mixer.music.play(-1, 0, 0)
@@ -741,7 +741,7 @@ def main():
                 enemies = []
                 bonuses.clear()
                 hero.bullets.clear()
-                hero.lives = 3
+                hero.lives = 50
                 timer_trav_cert = 0
                 timer_ammo = 0
                 timer_freeze = 0
@@ -824,7 +824,7 @@ def main():
 
 def text_screen(lvl, image, BG, x, y):
     pygame.init()
-    if lvl == 0 or lvl % 2 == 1:
+    if lvl == 0:
         timer_explosion = 0
     else:
         timer_explosion = 1000
