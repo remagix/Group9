@@ -272,7 +272,7 @@ class Hero(Character):
         self.hero_img = heroImage
         self.mask = pygame.mask.from_surface(self.hero_img)
         self.bullet_img = drop_img
-        self.lives = 3
+        self.lives = 100
         self.level = 0
 
     def draw(self, window):
@@ -363,7 +363,7 @@ def collide(obj1, obj2):
 
 def main():
     run = True
-    level = 2
+    level = 3
     main_font = pygame.font.SysFont("timesnewroman", 20)
     lost_font = pygame.font.SysFont("timesnewroman", 30, bold=True)
     enemies = []
@@ -396,6 +396,7 @@ def main():
 
         WINDOW.blit(lost_label, (WINDOW_WIDTH / 2 - lost_label.get_width() / 2, 260))
         WINDOW.blit(lost_label2, (WINDOW_WIDTH / 2 - lost_label2.get_width() / 2, 300))
+
         pygame.mixer.music.stop()
         pygame.mixer.music.load('covinv_docs/Despi.mid')
         pygame.mixer.music.play(-1, 0, 0)
@@ -471,6 +472,10 @@ def main():
             stop()
         if level == 0:
             level = text_screen(level, story1_img, explosionImage, -300, -300)
+
+            pygame.mixer.music.load('covinv_docs/jojo.mp3')
+            pygame.mixer.music.play(-1, 0, 0)
+
         if level == 1:
             BG = jungle_BG
             if len(enemies) == 0:
@@ -510,8 +515,12 @@ def main():
                     hero.lives -= 1
                     enemies.remove(enemy)
             timer_freeze -= 1
-            if wave == 2:
-                level = text_screen(level, story2_img,jungle_BG, -300, -300)
+            if wave == 5:
+                level = text_screen(level, story2_img, jungle_BG, -300, -300)
+
+                pygame.mixer.music.load('covinv_docs/bowser_mario.mp3')
+                pygame.mixer.music.play(-1, 0, 0)
+
                 wave = 0
                 wave_length = 10
                 enemies = []
@@ -540,7 +549,7 @@ def main():
                 bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), -100, randBonus)
                 bonuses.append(bonus)
             batBoss.move_bullets_pangolin(-bullet_vel, hero, invincible)
-            hero.move_bullets_vs_boss(-bullet_vel, batBoss,25)
+            hero.move_bullets_vs_boss(-bullet_vel, batBoss, 1)
 
             for bonus in bonuses[:]:
                 bonus.move(bonus_vel)
@@ -558,6 +567,10 @@ def main():
 
             if batBoss.health == 0:
                 level = text_screen(level, story3_img,batcave_BG, batBoss.x, batBoss.y)
+
+                pygame.mixer.music.load('covinv_docs/invaders.mp3')
+                pygame.mixer.music.play(-1, 0, 0)
+
                 bossUS.health = 50
                 bonuses.clear()
                 hero.bullets.clear()
@@ -607,8 +620,11 @@ def main():
                     hero.lives -= 1
                     enemies.remove(enemy)
             timer_freeze -= 1
-            if wave == 2:
+            if wave == 5:
                 level = text_screen(level, story4_img,DC_BG, -300, -300)
+
+                pygame.mixer.music.load('covinv_docs/brawl.mp3')
+                pygame.mixer.music.play(-1, 0, 0)
                 wave = 0
                 wave_length = 10
                 enemies = []
@@ -656,7 +672,9 @@ def main():
                         timer_mask = 400
 
             if bossUS.health == 0:
-                level = text_screen(level, story5_img,whitehouse_BG, bossUS.x, boss.y)
+                level = text_screen(level, story5_img,whitehouse_BG, bossUS.x, bossUS.y)
+                pygame.mixer.music.load('covinv_docs/melee.mp3')
+                pygame.mixer.music.play(-1, 0, 0)
                 pangolinBoss.health = 50
                 bonuses.clear()
                 hero.bullets.clear()
@@ -709,6 +727,10 @@ def main():
             timer_freeze -= 1
             if wave == 2:
                 level = text_screen(level, story2_img)
+
+                pygame.mixer.music.load('covinv_docs/ofortuna.mp3')
+                pygame.mixer.music.play(-1, 0, 0)
+
                 wave = 0
                 wave_length = 10
                 enemies = []
@@ -763,6 +785,7 @@ def main():
 
             if pangolinBoss.health <= 0:
                 level = text_screen(level, story2_img,spacesun_BG, pangolinBoss.x, pangolinBoss.y)
+                pygame.mixer.music.load('covinv_docs/ofortuna.mp3')
         if level == 7:
             main_start()
 
@@ -796,7 +819,10 @@ def main():
 
 def text_screen(lvl, image, BG, x, y):
     pygame.init()
-    timer_explosion = 1000
+    if lvl == 0 or lvl % 2 == 1:
+        timer_explosion = 0
+    else:
+        timer_explosion = 1000
     run = True
     clear_font = pygame.font.SysFont("timesnewroman", 30, bold=True)
     clear_label = clear_font.render("Level clear", 1, (255,255,255))
