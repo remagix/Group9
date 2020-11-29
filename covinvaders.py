@@ -97,6 +97,8 @@ story5_img = pygame.transform.scale(pygame.image.load('covinv_docs/StartBG 5.jpg
                                    (WINDOW_WIDTH, WINDOW_HEIGHT))
 story6_img = pygame.transform.scale(pygame.image.load('covinv_docs/StartBG 6.jpg'),
                                    (WINDOW_WIDTH, WINDOW_HEIGHT))
+top1_img = pygame.transform.scale(pygame.image.load('covinv_docs/victory_royale.jpg'),
+                                   (WINDOW_WIDTH, WINDOW_HEIGHT))
 
 
 class Falling:
@@ -373,7 +375,7 @@ def collide(obj1, obj2):
 
 def main():
     run = True
-    level = 4
+    level = 0
     main_font = pygame.font.SysFont("timesnewroman", 20)
     lost_font = pygame.font.SysFont("timesnewroman", 30, bold=True)
     enemies = []
@@ -847,7 +849,7 @@ def main():
                         timer_mask = 400
 
             if pangolinBoss.health <= 0:
-                level, animation = text_screen(level, story2_img, BG, pangolinBoss.x, pangolinBoss.y)
+                level, animation = text_screen(level, top1_img, BG, pangolinBoss.x, pangolinBoss.y)
                 pygame.mixer.music.load('covinv_docs/ofortuna.mp3')
         if level == 7:
             final_screen()
@@ -939,7 +941,7 @@ def text_screen(lvl, image, BG, x, y):
 
 def final_screen():
     run = True
-    final_font = pygame.font.SysFont("timesnewroman", 30, bold=True)
+    final_font = pygame.font.SysFont("timesnewroman", 20, bold=True)
     final_label = final_font.render("BON TRAVAIL ! TU AS MIS FIN A L'INVASION DU COVID", 1, (255, 255, 255))
     continue_label = final_font.render("SI TU VEUX RECOMMENCER APPUIE SUR ESPACE", 1, (255,255,255))
     pygame.mixer.music.stop()
