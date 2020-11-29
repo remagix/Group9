@@ -11,7 +11,7 @@ from pygame.locals import *
 pygame.font.init()
 pygame.mixer.init()
 
-pygame.mixer.music.load('covinv_docs/Dior.mp3')
+
 
 
 FPS = 60
@@ -373,7 +373,7 @@ def collide(obj1, obj2):
 
 def main():
     run = True
-    level = 0
+    level = 5
     main_font = pygame.font.SysFont("timesnewroman", 20)
     lost_font = pygame.font.SysFont("timesnewroman", 30, bold=True)
     enemies = []
@@ -509,7 +509,7 @@ def main():
                     bonuses.append(bonus)
                 for i in range(wave_length):
                     randVirus = random.choice(["red", "green"])
-                    enemy = Colorvirus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1200, -300),
+                    enemy = Colorvirus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1000, -300),
                                        randVirus,
                                        randVirus)
                     enemies.append(enemy)
@@ -785,8 +785,8 @@ def main():
                     hero.lives -= 1
                     enemies.remove(enemy)
             timer_freeze -= 1
-            if wave == 6:
-                level = text_screen(level, story6_img, BG, -300, -300)
+            if wave == 1:
+                level, animation = text_screen(level, story6_img, BG, -300, -300)
 
                 pygame.mixer.music.load('covinv_docs/ofortuna.mp3')
                 pygame.mixer.music.play(-1, 0, 0)
@@ -801,7 +801,8 @@ def main():
                 timer_ammo = 0
                 timer_freeze = 0
                 timer_mask = 0
-                pangolin_arriving()
+                if animation:
+                    pangolin_arriving()
 
         if level == 6:
             hero.hero_img = rocketHeroImage
@@ -849,7 +850,7 @@ def main():
                 level = text_screen(level, story2_img, BG, pangolinBoss.x, pangolinBoss.y)
                 pygame.mixer.music.load('covinv_docs/ofortuna.mp3')
         if level == 7:
-            main_start()
+            final_screen()
 
         for event in pygame.event.get():
             if (event.type == pygame.QUIT) or ((event.type == KEYDOWN) and (event.key == K_ESCAPE)):
@@ -898,7 +899,6 @@ def  pangolin_arriving():
             run = False
 
 
-
 def text_screen(lvl, image, BG, x, y):
     pygame.init()
     if lvl == 0:
@@ -908,6 +908,8 @@ def text_screen(lvl, image, BG, x, y):
     run = True
     clear_font = pygame.font.SysFont("timesnewroman", 30, bold=True)
     clear_label = clear_font.render("Level clear", 1, (255,255,255))
+    mac_font = pygame.font.SysFont("timesnewroman", 20, bold=True)
+    mac_label = mac_font.render("Si vous jouez sur un mac, pressez la barre espace", 1, (255, 255, 255))
     while run:
         while timer_explosion > 0:
             WINDOW.blit(BG, (0,0))
@@ -916,6 +918,8 @@ def text_screen(lvl, image, BG, x, y):
             pygame.display.update()
             timer_explosion -= 1
         WINDOW.blit(image, (0, 0))
+        if lvl == 5:
+            WINDOW.blit(mac_label, (WINDOW_WIDTH / 2 - mac_label.get_width() / 2, 450))
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -923,15 +927,45 @@ def text_screen(lvl, image, BG, x, y):
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     run = False
-                else:
+                elif event.key == K_SPACE:
+                    animation = False
                     lvl += 1
-                    return lvl
+                    return  lvl, animation
+                else:
+                    animation = True
+                    lvl += 1
+                    return lvl, animation
+    pygame.quit()
+
+def final_screen():
+    run = True
+    final_font = pygame.font.SysFont("timesnewroman", 30, bold=True)
+    final_label = final_font.render("BON TRAVAIL ! TU AS MIS FIN A L'INVASION DU COVID", 1, (255, 255, 255))
+    continue_label = final_font.render("SI TU VEUX RECOMMENCER APPUIE SUR ESPACE", 1, (255,255,255))
+    pygame.mixer.music.stop()
+    while run:
+
+        WINDOW.blit(startBGImage, (0, 0))
+        WINDOW.blit(final_label, (WINDOW_WIDTH / 2 - final_label.get_width() / 2, 280))
+        WINDOW.blit(continue_label, (WINDOW_WIDTH / 2 - continue_label.get_width() / 2, 350))
+
+        pygame.display.update()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    run = False
+                elif event.key == K_SPACE:
+                    main_start()
+
     pygame.quit()
 
 def main_start():
     pygame.init()
     run = True
     title_font = pygame.font.SysFont("comicsans", 30)
+    pygame.mixer.music.load('covinv_docs/Dior.mp3')
     pygame.mixer.music.play(-1, 0, 0)
     while run:
         WINDOW.blit(startBGImage, (0, 0))
