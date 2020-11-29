@@ -31,7 +31,7 @@ drop_img = pygame.transform.scale(pygame.image.load('covinv_docs/drop.png'), (20
 pangbat_img = pygame.transform.scale(pygame.image.load('covinv_docs/missilelittlebat.png'), (80, 80))
 batgrnfire_img = pygame.transform.scale(pygame.image.load('covinv_docs/grnfire.png'), (80, 80))
 batredfire_img = pygame.transform.scale(pygame.image.load('covinv_docs/redfire.png'), (80, 80))
-bulletUS_img = pygame.transform.scale(pygame.image.load('covinv_docs/bulletUS.png'), (80, 80))
+dynamiteUS_img = pygame.transform.scale(pygame.image.load('covinv_docs/dynamite.png'), (70, 70))
 nukeUS_img = pygame.transform.scale(pygame.image.load('covinv_docs/nukeUS.png'), (80, 80))
 
 HP_RED = 2
@@ -368,7 +368,7 @@ def collide(obj1, obj2):
 
 def main():
     run = True
-    level = 0
+    level = 5
     main_font = pygame.font.SysFont("timesnewroman", 20)
     lost_font = pygame.font.SysFont("timesnewroman", 30, bold=True)
     enemies = []
@@ -381,7 +381,7 @@ def main():
     timer_pangolin = 0
     timer_pangolin_def = 0
     wave = 0
-    virus_vel = 1
+    virus_vel = 20
     bonus_vel = 2
     bullet_vel = 5
     boss_vel = 2
@@ -391,7 +391,7 @@ def main():
     batBoss = Boss(200, 0)
     batBoss.bullet_img = batredfire_img
     bossUS = Boss(200, 0)
-    bossUS.bullet_img = bulletUS_img
+    bossUS.bullet_img = dynamiteUS_img
     pangolinBoss = Boss(200,0)
     pangolinBoss.bullet_img = pangbat_img
 
@@ -785,11 +785,13 @@ def main():
                 timer_ammo = 0
                 timer_freeze = 0
                 timer_mask = 0
+                pangolin_arriving()
 
         if level == 6:
             hero.hero_img = rocketHeroImage
             boss_cooldown += 1
             BG = spacesun_BG
+
 
             if timer_pangolin <= 400:
                 timer_pangolin += 1
@@ -859,6 +861,28 @@ def main():
         hero.move_bullets(-bullet_vel, enemies)
 
         redraw_window()
+
+def  pangolin_arriving():
+    timer_pangolin_arriving = 16000
+    run = True
+    i = -700
+    while run:
+
+        WINDOW.blit(spacesun_BG, (0, 0))
+        WINDOW.blit(pangolinImage, (200, i))
+        WINDOW.blit(rocketHeroImage, (250, 500))
+        pygame.display.update()
+        timer_pangolin_arriving -= 1
+        if i < 0:
+            i += 0.05
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+            if event.key == K_ESCAPE:
+                run = False
+        if timer_pangolin_arriving <= 0:
+            run = False
+
 
 
 def text_screen(lvl, image, BG, x, y):
