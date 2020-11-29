@@ -33,11 +33,12 @@ batgrnfire_img = pygame.transform.scale(pygame.image.load('covinv_docs/grnfire.p
 batredfire_img = pygame.transform.scale(pygame.image.load('covinv_docs/redfire.png'), (80, 80))
 dynamiteUS_img = pygame.transform.scale(pygame.image.load('covinv_docs/dynamite.png'), (70, 70))
 nukeUS_img = pygame.transform.scale(pygame.image.load('covinv_docs/nukeUS.png'), (80, 80))
+minibat_img = pygame.transform.scale(pygame.image.load('covinv_docs/pngegg.png'), (80, 56))
 
-HP_RED = 2
-HP_GREEN = 3
-HP_BLUE = 4
-HP_PURPLE = 5
+HP_RED = 1
+HP_GREEN = 2
+HP_BLUE = 3
+HP_PURPLE = 4
 
 
 heroImage = pygame.transform.scale(pygame.image.load('covinv_docs/samus.png'), (70, 90))
@@ -204,7 +205,7 @@ class Boss(Character):
             else:
                 if bullet.collides_with(hero):
                     if not invincible:
-                        if hero.lives - 1 > 0:
+                        if hero.lives  > 0:
                             hero.lives -= 1
                     if bullet in self.bullets:
                         self.bullets.remove(bullet)
@@ -217,19 +218,19 @@ class Boss(Character):
             else:
                 if bullet.collides_with(hero):
                     if not invincible:
-                        if hero.lives - 1 >= 0:
+                        if hero.lives  >= 0:
                             hero.lives -= 1
                     if bullet in self.bullets:
                         self.bullets.remove(bullet)
     def move_bullets_batBoss(self, vel, hero, invincible):
         for bullet in self.bullets:
-            bullet.move_pangolin(-vel)
+            bullet.move(-vel)
             if bullet.off_screen(WINDOW_HEIGHT):
                 self.bullets.remove(bullet)
             else:
                 if bullet.collides_with(hero):
                     if not invincible:
-                        if hero.lives - 1 >= 0:
+                        if hero.lives >= 0:
                             hero.lives -= 1
                     if bullet in self.bullets:
                         self.bullets.remove(bullet)
@@ -279,7 +280,7 @@ class Hero(Character):
         self.hero_img = heroImage
         self.mask = pygame.mask.from_surface(self.hero_img)
         self.bullet_img = drop_img
-        self.lives = 50
+        self.lives = 5
         self.level = 0
 
     def draw(self, window):
@@ -330,14 +331,16 @@ class Colorvirus(Virus):
         "red": redVirusImage,
         "green": greenVirusImage,
         "blue": blueVirusImage,
-        "purple": purpleVirusImage
+        "purple": purpleVirusImage,
+        "minibat": minibat_img
     }
 
     Health_Map = {
         "red": HP_RED,
         "green": HP_GREEN,
         "blue": HP_BLUE,
-        "purple": HP_PURPLE
+        "purple": HP_PURPLE,
+        "minibat": 2
     }
 
 
@@ -370,7 +373,7 @@ def collide(obj1, obj2):
 
 def main():
     run = True
-    level = 5
+    level = 0
     main_font = pygame.font.SysFont("timesnewroman", 20)
     lost_font = pygame.font.SysFont("timesnewroman", 30, bold=True)
     enemies = []
@@ -383,7 +386,7 @@ def main():
     timer_pangolin = 0
     timer_pangolin_def = 0
     wave = 0
-    virus_vel = 20
+    virus_vel = 1
     bonus_vel = 2
     bullet_vel = 5
     boss_vel = 2
@@ -490,26 +493,20 @@ def main():
             BG = jungle_BG
             if len(enemies) == 0:
                 wave += 1
-                wave_length += 1
+                wave_length += 3
                 if wave < 3:
                     randBonus = random.choice(["freeze", "vaccine", "trav_cert", "ammo"])
                     bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1700, -1300), randBonus)
                     bonuses.append(bonus)
                 else:
-                    if wave < 3:
-                        randBonus = random.choice(["freeze", "vaccine", "trav_cert", "ammo"])
-                        bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1700, -1300),
-                                      randBonus)
-                        bonuses.append(bonus)
-                    else:
-                        randBonus = random.choice(["freeze", "vaccine", "trav_cert", "ammo"])
-                        bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1900, -1700),
-                                      randBonus)
-                        bonuses.append(bonus)
-                        randBonus = random.choice(["freeze", "vaccine", "trav_cert", "ammo"])
-                        bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1400, -1200),
-                                      randBonus)
-                        bonuses.append(bonus)
+                    randBonus = random.choice(["freeze", "vaccine", "trav_cert", "ammo"])
+                    bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1900, -1700),
+                                  randBonus)
+                    bonuses.append(bonus)
+                    randBonus = random.choice(["freeze", "vaccine", "trav_cert", "ammo"])
+                    bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1400, -1200),
+                                  randBonus)
+                    bonuses.append(bonus)
                 for i in range(wave_length):
                     randVirus = random.choice(["red", "green"])
                     enemy = Colorvirus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1200, -300),
@@ -540,7 +537,7 @@ def main():
                     hero.lives -= 1
                     enemies.remove(enemy)
             timer_freeze -= 1
-            if wave == 5:
+            if wave == 6:
                 level = text_screen(level, story2_img, jungle_BG, -300, -300)
 
                 pygame.mixer.music.load('covinv_docs/bowser_mario.mp3')
@@ -551,7 +548,7 @@ def main():
                 enemies = []
                 bonuses.clear()
                 hero.bullets.clear()
-                hero.lives = 3
+                hero.lives = 5
                 timer_trav_cert = 0
                 timer_ammo = 0
                 timer_freeze = 0
@@ -565,17 +562,31 @@ def main():
                 batBoss.move(boss_vel)
                 if boss_cooldown % 100 == 0:
                     batBoss.shoot_Pangolin()
+                    minibat = Colorvirus(random.randrange(50, WINDOW_WIDTH - 100), -100, "minibat", "minibat")
+                    enemies.append(minibat)
             else:
                 batBoss.bullet_img = batgrnfire_img
                 batBoss.move(boss_vel * 2)
                 if boss_cooldown % 50 == 0:
                     batBoss.shoot_Pangolin()
+                    minibat = Colorvirus(random.randrange(50, WINDOW_WIDTH - 100), -100, "minibat", "minibat")
+                    enemies.append(minibat)
             if boss_cooldown % 650 == 0:
                 randBonus = random.choice(["ammo","trav_cert", "vaccine","mask"])
                 bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), -100, randBonus)
                 bonuses.append(bonus)
-            batBoss.move_bullets_pangolin(-bullet_vel, hero, invincible)
+            batBoss.move_bullets_batBoss(-bullet_vel, hero, invincible)
             hero.move_bullets_vs_boss(-bullet_vel, batBoss, 1)
+
+            for minibat in enemies[:]:
+                minibat.move(bonus_vel)
+                if WINDOW_HEIGHT < 56:
+                    enemies.remove(minibat)
+                if minibat.touches(hero):
+                    if not invincible:
+                        hero.lives -= 1
+                    enemies.remove(minibat)
+
 
             for bonus in bonuses[:]:
                 bonus.move(bonus_vel)
@@ -601,17 +612,18 @@ def main():
                 bonuses.clear()
                 hero.bullets.clear()
                 boss_cooldown = 0
-                hero.lives = 3
+                hero.lives = 5
                 timer_trav_cert = 0
                 timer_ammo = 0
                 timer_freeze = 0
                 timer_mask = 0
+                enemies = []
 
         if level == 3:
             BG = DC_BG
             if len(enemies) == 0:
                 wave += 1
-                wave_length += 5
+                wave_length += 3
                 if wave < 3:
                     randBonus = random.choice(["freeze", "vaccine", "trav_cert", "ammo"])
                     bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1700, -1300), randBonus)
@@ -655,7 +667,7 @@ def main():
                     hero.lives -= 1
                     enemies.remove(enemy)
             timer_freeze -= 1
-            if wave == 5:
+            if wave == 6:
                 level = text_screen(level, story4_img, BG, -300, -300)
 
                 pygame.mixer.music.load('covinv_docs/brawl.mp3')
@@ -666,7 +678,7 @@ def main():
                 enemies = []
                 bonuses.clear()
                 hero.bullets.clear()
-                hero.lives = 3
+                hero.lives = 5
                 timer_trav_cert = 0
                 timer_ammo = 0
                 timer_freeze = 0
@@ -679,14 +691,16 @@ def main():
             if bossUS.health > 25:
                 bossUS.boss_img = bossUSImage
                 bossUS.move(boss_vel)
-                if boss_cooldown % 60 == 0:
+                if boss_cooldown % 50 == 0:
                     bossUS.shoot_BossUS()
             else:
                 bossUS.boss_img = angryBossUSImage
                 bossUS.bullet_img = nukeUS_img
                 bossUS.move(boss_vel * 2)
-                if boss_cooldown % 30 == 0:
+                if boss_cooldown % 25 == 0:
                     bossUS.shoot_BossUS()
+            if boss_cooldown % 60 == 0:
+                bossUS.y += 1
             if boss_cooldown % 650 == 0:
                 randBonus = random.choice(["ammo","trav_cert", "vaccine","mask"])
                 bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), -100, randBonus)
@@ -716,7 +730,7 @@ def main():
                 bonuses.clear()
                 hero.bullets.clear()
                 boss_cooldown = 0
-                hero.lives = 3
+                hero.lives = 5
                 timer_trav_cert = 0
                 timer_ammo = 0
                 timer_freeze = 0
@@ -727,14 +741,14 @@ def main():
             hero.hero_img = rocketHeroImage
             if len(enemies) == 0:
                 wave += 1
-                wave_length += 5
+                wave_length += 3
                 if wave < 3:
                     randBonus = random.choice(["freeze", "vaccine", "trav_cert", "ammo"])
                     bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1700, -1300), randBonus)
                     bonuses.append(bonus)
                 else:
                     randBonus = random.choice(["freeze", "vaccine", "trav_cert", "ammo"])
-                    bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1900, -1700),
+                    bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-2100, -1800),
                                   randBonus)
                     bonuses.append(bonus)
                     randBonus = random.choice(["freeze", "vaccine", "trav_cert", "ammo"])
@@ -743,7 +757,7 @@ def main():
                     bonuses.append(bonus)
                 for i in range(wave_length):
                     randVirus = random.choice(["red", "green", "blue", "purple"])
-                    enemy = Colorvirus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1200, -300),
+                    enemy = Colorvirus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1500, -300),
                                        randVirus,
                                        randVirus)
                     enemies.append(enemy)
@@ -771,7 +785,7 @@ def main():
                     hero.lives -= 1
                     enemies.remove(enemy)
             timer_freeze -= 1
-            if wave == 2:
+            if wave == 6:
                 level = text_screen(level, story6_img, BG, -300, -300)
 
                 pygame.mixer.music.load('covinv_docs/ofortuna.mp3')
@@ -782,7 +796,7 @@ def main():
                 enemies = []
                 bonuses.clear()
                 hero.bullets.clear()
-                hero.lives = 50
+                hero.lives = 5
                 timer_trav_cert = 0
                 timer_ammo = 0
                 timer_freeze = 0
