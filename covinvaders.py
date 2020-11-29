@@ -31,7 +31,7 @@ drop_img = pygame.transform.scale(pygame.image.load('covinv_docs/drop.png'), (20
 pangbat_img = pygame.transform.scale(pygame.image.load('covinv_docs/missilelittlebat.png'), (80, 80))
 batgrnfire_img = pygame.transform.scale(pygame.image.load('covinv_docs/grnfire.png'), (80, 80))
 batredfire_img = pygame.transform.scale(pygame.image.load('covinv_docs/redfire.png'), (80, 80))
-dynamiteUS_img = pygame.transform.scale(pygame.image.load('covinv_docs/dynamite.png'), (70, 70))
+bulletUS_img = pygame.transform.scale(pygame.image.load('covinv_docs/bulletUS.png'), (80, 80))
 nukeUS_img = pygame.transform.scale(pygame.image.load('covinv_docs/nukeUS.png'), (80, 80))
 
 HP_RED = 2
@@ -84,17 +84,18 @@ space_BG = pygame.transform.scale(pygame.image.load('covinv_docs/earth.jpg'),
                                    (WINDOW_WIDTH, WINDOW_HEIGHT))
 spacesun_BG = pygame.transform.scale(pygame.image.load('covinv_docs/sun_pango (2).jpg'),
                                    (WINDOW_WIDTH, WINDOW_HEIGHT))
-story1_img = pygame.transform.scale(pygame.image.load('covinv_docs/Story 1.1 .png'),
+story1_img = pygame.transform.scale(pygame.image.load('covinv_docs/StartBG 1.jpg'),
                                    (WINDOW_WIDTH, WINDOW_HEIGHT))
-story2_img = pygame.transform.scale(pygame.image.load('covinv_docs/Story 2.1 .png'),
+story2_img = pygame.transform.scale(pygame.image.load('covinv_docs/StartBG 2.jpg'),
                                    (WINDOW_WIDTH, WINDOW_HEIGHT))
-story3_img = pygame.transform.scale(pygame.image.load('covinv_docs/Story 3.1 .png'),
+story3_img = pygame.transform.scale(pygame.image.load('covinv_docs/StartBG 3.jpg'),
                                    (WINDOW_WIDTH, WINDOW_HEIGHT))
-story4_img = pygame.transform.scale(pygame.image.load('covinv_docs/Story 4.1 .png'),
+story4_img = pygame.transform.scale(pygame.image.load('covinv_docs/StartBG 4.jpg'),
                                    (WINDOW_WIDTH, WINDOW_HEIGHT))
-story5_img = pygame.transform.scale(pygame.image.load('covinv_docs/Story 5.1 .png'),
+story5_img = pygame.transform.scale(pygame.image.load('covinv_docs/StartBG 5.jpg'),
                                    (WINDOW_WIDTH, WINDOW_HEIGHT))
-
+story6_img = pygame.transform.scale(pygame.image.load('covinv_docs/StartBG 6.jpg'),
+                                   (WINDOW_WIDTH, WINDOW_HEIGHT))
 
 class Falling:
     def __init__(self, x, y):
@@ -381,7 +382,7 @@ def main():
     timer_pangolin = 0
     timer_pangolin_def = 0
     wave = 0
-    virus_vel = 20
+    virus_vel = 1
     bonus_vel = 2
     bullet_vel = 5
     boss_vel = 2
@@ -391,7 +392,7 @@ def main():
     batBoss = Boss(200, 0)
     batBoss.bullet_img = batredfire_img
     bossUS = Boss(200, 0)
-    bossUS.bullet_img = dynamiteUS_img
+    bossUS.bullet_img = bulletUS_img
     pangolinBoss = Boss(200,0)
     pangolinBoss.bullet_img = pangbat_img
 
@@ -786,12 +787,10 @@ def main():
                 timer_freeze = 0
                 timer_mask = 0
                 pangolin_arriving()
-
         if level == 6:
             hero.hero_img = rocketHeroImage
             boss_cooldown += 1
             BG = spacesun_BG
-
 
             if timer_pangolin <= 400:
                 timer_pangolin += 1
@@ -861,29 +860,26 @@ def main():
         hero.move_bullets(-bullet_vel, enemies)
 
         redraw_window()
-
 def  pangolin_arriving():
-    timer_pangolin_arriving = 16000
-    run = True
-    i = -700
-    while run:
+   timer_pangolin_arriving = 16000
+   run = True
+   i = -700
+   while run:
 
-        WINDOW.blit(spacesun_BG, (0, 0))
-        WINDOW.blit(pangolinImage, (200, i))
-        WINDOW.blit(rocketHeroImage, (250, 500))
-        pygame.display.update()
-        timer_pangolin_arriving -= 1
-        if i < 0:
-            i += 0.05
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                run = False
-            if event.key == K_ESCAPE:
-                run = False
-        if timer_pangolin_arriving <= 0:
-            run = False
-
-
+       WINDOW.blit(spacesun_BG, (0, 0))
+       WINDOW.blit(pangolinImage, (200, i))
+       WINDOW.blit(rocketHeroImage, (200, 500))
+       pygame.display.update()
+       timer_pangolin_arriving -= 1
+       if i < 0:
+           i += 0.05
+       for event in pygame.event.get():
+           if event.type == pygame.QUIT:
+               run = False
+           if event.key == K_ESCAPE:
+               run = False
+       if timer_pangolin_arriving <= 0:
+           run = False
 
 def text_screen(lvl, image, BG, x, y):
     pygame.init()
