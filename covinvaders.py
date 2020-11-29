@@ -373,7 +373,7 @@ def collide(obj1, obj2):
 
 def main():
     run = True
-    level = 5
+    level = 4
     main_font = pygame.font.SysFont("timesnewroman", 20)
     lost_font = pygame.font.SysFont("timesnewroman", 30, bold=True)
     enemies = []
@@ -484,7 +484,7 @@ def main():
             lost = True
             stop()
         if level == 0:
-            level = text_screen(level, story1_img, explosionImage, -300, -300)
+            level,animation = text_screen(level, story1_img, explosionImage, -300, -300)
 
             pygame.mixer.music.load('covinv_docs/jojo.mp3')
             pygame.mixer.music.play(-1, 0, 0)
@@ -538,7 +538,7 @@ def main():
                     enemies.remove(enemy)
             timer_freeze -= 1
             if wave == 6:
-                level = text_screen(level, story2_img, jungle_BG, -300, -300)
+                level, animation = text_screen(level, story2_img, jungle_BG, -300, -300)
 
                 pygame.mixer.music.load('covinv_docs/bowser_mario.mp3')
                 pygame.mixer.music.play(-1, 0, 0)
@@ -576,7 +576,7 @@ def main():
                 bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), -100, randBonus)
                 bonuses.append(bonus)
             batBoss.move_bullets_batBoss(-bullet_vel, hero, invincible)
-            hero.move_bullets_vs_boss(-bullet_vel, batBoss, 1)
+            hero.move_bullets_vs_boss(-bullet_vel, batBoss, 0.75)
 
             for minibat in enemies[:]:
                 minibat.move(bonus_vel)
@@ -602,8 +602,8 @@ def main():
                     elif bonus.bonus_num == "mask":
                         timer_mask = 400
 
-            if batBoss.health == 0:
-                level = text_screen(level, story3_img, BG, batBoss.x, batBoss.y)
+            if batBoss.health <= 0:
+                level , animation = text_screen(level, story3_img, BG, batBoss.x, batBoss.y)
 
                 pygame.mixer.music.load('covinv_docs/invaders.mp3')
                 pygame.mixer.music.play(-1, 0, 0)
@@ -668,7 +668,7 @@ def main():
                     enemies.remove(enemy)
             timer_freeze -= 1
             if wave == 6:
-                level = text_screen(level, story4_img, BG, -300, -300)
+                level, animation = text_screen(level, story4_img, BG, -300, -300)
 
                 pygame.mixer.music.load('covinv_docs/brawl.mp3')
                 pygame.mixer.music.play(-1, 0, 0)
@@ -723,7 +723,7 @@ def main():
                         timer_mask = 400
 
             if bossUS.health == 0:
-                level = text_screen(level, story5_img, BG, bossUS.x, bossUS.y)
+                level, animation = text_screen(level, story5_img, BG, bossUS.x, bossUS.y)
                 pygame.mixer.music.load('covinv_docs/melee.mp3')
                 pygame.mixer.music.play(-1, 0, 0)
                 pangolinBoss.health = 50
@@ -785,7 +785,7 @@ def main():
                     hero.lives -= 1
                     enemies.remove(enemy)
             timer_freeze -= 1
-            if wave == 1:
+            if wave == 2:
                 level, animation = text_screen(level, story6_img, BG, -300, -300)
 
                 pygame.mixer.music.load('covinv_docs/ofortuna.mp3')
@@ -847,7 +847,7 @@ def main():
                         timer_mask = 400
 
             if pangolinBoss.health <= 0:
-                level = text_screen(level, story2_img, BG, pangolinBoss.x, pangolinBoss.y)
+                level, animation = text_screen(level, story2_img, BG, pangolinBoss.x, pangolinBoss.y)
                 pygame.mixer.music.load('covinv_docs/ofortuna.mp3')
         if level == 7:
             final_screen()
@@ -926,15 +926,15 @@ def text_screen(lvl, image, BG, x, y):
                 run = False
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
+                    animation = True
                     run = False
                 elif event.key == K_SPACE:
                     animation = False
                     lvl += 1
-                    return  lvl, animation
                 else:
                     animation = True
                     lvl += 1
-                    return lvl, animation
+                return lvl, animation
     pygame.quit()
 
 def final_screen():
