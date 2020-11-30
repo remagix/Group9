@@ -375,7 +375,7 @@ def collide(obj1, obj2):
 
 def main():
     run = True
-    level = 0
+    level = 2
     main_font = pygame.font.SysFont("timesnewroman", 20)
     lost_font = pygame.font.SysFont("timesnewroman", 30, bold=True)
     enemies = []
@@ -470,7 +470,10 @@ def main():
 
         if timer_mask <= 0:
             invincible = False
-            hero.hero_img = heroImage
+            if level < 5:
+                hero.hero_img = heroImage
+            else:
+                hero.hero_img = rocketHeroImage
         else:
             invincible = True
             timer_mask -= 1
@@ -740,7 +743,7 @@ def main():
 
         if level == 5:
             BG = space_BG
-            hero.hero_img = rocketHeroImage
+            #hero.hero_img = rocketHeroImage
             if len(enemies) == 0:
                 wave += 1
                 wave_length += 3
@@ -787,7 +790,7 @@ def main():
                     hero.lives -= 1
                     enemies.remove(enemy)
             timer_freeze -= 1
-            if wave == 2:
+            if wave == 6:
                 level, animation = text_screen(level, story6_img, BG, -300, -300)
 
                 pygame.mixer.music.load('covinv_docs/ofortuna.mp3')
@@ -807,7 +810,6 @@ def main():
                     pangolin_arriving()
 
         if level == 6:
-            hero.hero_img = rocketHeroImage
             boss_cooldown += 1
             BG = spacesun_BG
 
