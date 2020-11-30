@@ -431,7 +431,6 @@ def main():
                         quit()
                     else:
                         pygame.mixer.music.stop()
-                        pygame.mixer.music.load('covinv_docs/Dior.mp3')
                         main_start()
                         break
             pygame.init()
@@ -495,6 +494,8 @@ def main():
             stop()
         if level == 0:
 
+            pygame.mixer.music.stop()
+
             level,animation = text_screen(level, story1_img, explosionImage, -300, -300)
 
             pygame.mixer.music.load('covinv_docs/jungle.mp3')
@@ -549,6 +550,8 @@ def main():
                     enemies.remove(enemy)
             timer_freeze -= 1
             if wave == 6:
+                pygame.mixer.music.stop()
+
                 level, animation = text_screen(level, story2_img, jungle_BG, -300, -300)
 
                 pygame.mixer.music.load('covinv_docs/bowser_mario.mp3')
@@ -615,6 +618,8 @@ def main():
 
             if batBoss.health <= 0:
                 ahSound.play()
+                pygame.mixer.music.stop()
+
                 level , animation = text_screen(level, story3_img, BG, batBoss.x, batBoss.y)
 
                 pygame.mixer.music.load('covinv_docs/jojo.mp3')
@@ -680,6 +685,8 @@ def main():
                     enemies.remove(enemy)
             timer_freeze -= 1
             if wave == 6:
+                pygame.mixer.music.stop()
+
                 level, animation = text_screen(level, story4_img, BG, -300, -300)
 
                 pygame.mixer.music.load('covinv_docs/Dragonforce.mp3')
@@ -736,9 +743,13 @@ def main():
 
             if bossUS.health == 0:
                 ahSound.play()
+
+                pygame.mixer.music.stop()
+
                 level, animation = text_screen(level, story5_img, BG, bossUS.x, bossUS.y)
                 pygame.mixer.music.load('covinv_docs/melee.mp3')
                 pygame.mixer.music.play(-1, 0, 0)
+
                 pangolinBoss.health = 50
                 bonuses.clear()
                 hero.bullets.clear()
@@ -799,6 +810,8 @@ def main():
                     enemies.remove(enemy)
             timer_freeze -= 1
             if wave == 6:
+                pygame.mixer.music.stop()
+
                 level, animation = text_screen(level, story6_img, BG, -300, -300)
 
                 pygame.mixer.music.load('covinv_docs/ofortuna.mp3')
