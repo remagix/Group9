@@ -101,6 +101,9 @@ top1_img = pygame.transform.scale(pygame.image.load('covinv_docs/victory_royale.
                                    (WINDOW_WIDTH, WINDOW_HEIGHT))
 
 
+ahSound = pygame.mixer.Sound('covinv_docs/scream.wav')
+waterSound = pygame.mixer.Sound('covinv_docs/water.wav')
+
 class Falling:
     def __init__(self, x, y):
         self.x = x
@@ -299,6 +302,7 @@ class Hero(Character):
                 for obj in objs:
                     if bullet.collides_with(obj):
                         if obj.health - 1 == 0:
+                            waterSound.play()
                             objs.remove(obj)
                         else:
                             obj.health -= 1
@@ -486,13 +490,15 @@ def main():
             timer_trav_cert -= 1
 
         if hero.lives <= 0:
+            ahSound.play()
             lost = True
             stop()
         if level == 0:
+
             level,animation = text_screen(level, story1_img, explosionImage, -300, -300)
 
-            pygame.mixer.music.load('covinv_docs/jojo.mp3')
-            pygame.mixer.music.play(-1, 0, 0)
+            pygame.mixer.music.load('covinv_docs/jungle.mp3')
+            pygame.mixer.music.play(-1, 115, 0)
 
         if level == 1:
             BG = jungle_BG
@@ -608,9 +614,10 @@ def main():
                         timer_mask = 300
 
             if batBoss.health <= 0:
+                ahSound.play()
                 level , animation = text_screen(level, story3_img, BG, batBoss.x, batBoss.y)
 
-                pygame.mixer.music.load('covinv_docs/invaders.mp3')
+                pygame.mixer.music.load('covinv_docs/jojo.mp3')
                 pygame.mixer.music.play(-1, 0, 0)
 
                 bossUS.health = 50
@@ -675,7 +682,7 @@ def main():
             if wave == 6:
                 level, animation = text_screen(level, story4_img, BG, -300, -300)
 
-                pygame.mixer.music.load('covinv_docs/brawl.mp3')
+                pygame.mixer.music.load('covinv_docs/Dragonforce.mp3')
                 pygame.mixer.music.play(-1, 0, 0)
 
                 wave = 0
@@ -728,6 +735,7 @@ def main():
                         timer_mask = 300
 
             if bossUS.health == 0:
+                ahSound.play()
                 level, animation = text_screen(level, story5_img, BG, bossUS.x, bossUS.y)
                 pygame.mixer.music.load('covinv_docs/melee.mp3')
                 pygame.mixer.music.play(-1, 0, 0)
@@ -851,6 +859,7 @@ def main():
                         timer_mask = 300
 
             if pangolinBoss.health <= 0:
+                ahSound.play()
                 level, animation = text_screen(level, top1_img, BG, pangolinBoss.x, pangolinBoss.y)
         if level == 7:
             final_screen()
@@ -968,11 +977,10 @@ def main_start():
     pygame.init()
     run = True
     title_font = pygame.font.SysFont("comicsans", 30)
-    pygame.mixer.music.load('covinv_docs/Dior.mp3')
-    pygame.mixer.music.play(-1, 0, 0)
+    pygame.mixer.music.stop()
     while run:
         WINDOW.blit(startBGImage, (0, 0))
-        title_label = title_font.render("Press any key to go to war...", 1, (255, 255, 255))
+        title_label = title_font.render("Pressez sur une touche...", 1, (255, 255, 255))
         WINDOW.blit(title_label, (WINDOW_WIDTH / 2 - title_label.get_width() / 2, 350))
         pygame.display.update()
         for event in pygame.event.get():
