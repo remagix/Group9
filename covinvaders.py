@@ -375,7 +375,7 @@ def collide(obj1, obj2):
 
 def main():
     run = True
-    level = 2
+    level = 0
     main_font = pygame.font.SysFont("timesnewroman", 20)
     lost_font = pygame.font.SysFont("timesnewroman", 30, bold=True)
     enemies = []
@@ -498,18 +498,18 @@ def main():
             BG = jungle_BG
             if len(enemies) == 0:
                 wave += 1
-                wave_length += 3
+                wave_length += 4
                 if wave < 3:
                     randBonus = random.choice(["freeze", "vaccine", "trav_cert", "ammo"])
                     bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1700, -1300), randBonus)
                     bonuses.append(bonus)
                 else:
                     randBonus = random.choice(["freeze", "vaccine", "trav_cert", "ammo"])
-                    bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1900, -1700),
+                    bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1900, -1800),
                                   randBonus)
                     bonuses.append(bonus)
                     randBonus = random.choice(["freeze", "vaccine", "trav_cert", "ammo"])
-                    bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1400, -1200),
+                    bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1300, -1200),
                                   randBonus)
                     bonuses.append(bonus)
                 for i in range(wave_length):
@@ -529,9 +529,9 @@ def main():
                     elif bonus.bonus_num == "trav_cert":
                         timer_trav_cert = 500
                     elif bonus.bonus_num == "ammo":
-                        timer_ammo = 500
+                        timer_ammo = 300
                     elif bonus.bonus_num == "freeze":
-                        timer_freeze = 300
+                        timer_freeze = 200
 
             for enemy in enemies[:]:
                 if timer_freeze <= 0:
@@ -605,7 +605,7 @@ def main():
                     elif bonus.bonus_num == "ammo":
                         timer_ammo = 300
                     elif bonus.bonus_num == "mask":
-                        timer_mask = 400
+                        timer_mask = 300
 
             if batBoss.health <= 0:
                 level , animation = text_screen(level, story3_img, BG, batBoss.x, batBoss.y)
@@ -628,23 +628,23 @@ def main():
             BG = DC_BG
             if len(enemies) == 0:
                 wave += 1
-                wave_length += 3
+                wave_length += 4
                 if wave < 3:
                     randBonus = random.choice(["freeze", "vaccine", "trav_cert", "ammo"])
                     bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1700, -1300), randBonus)
                     bonuses.append(bonus)
                 else:
                     randBonus = random.choice(["freeze", "vaccine", "trav_cert", "ammo"])
-                    bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1900, -1700),
+                    bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1900, -1800),
                                   randBonus)
                     bonuses.append(bonus)
                     randBonus = random.choice(["freeze", "vaccine", "trav_cert", "ammo"])
-                    bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1400, -1200),
+                    bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1300, -1200),
                                   randBonus)
                     bonuses.append(bonus)
                 for i in range(wave_length):
                     randVirus = random.choice(["red", "green", "blue"])
-                    enemy = Colorvirus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1200, -300),
+                    enemy = Colorvirus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1400, -300),
                                        randVirus,
                                        randVirus)
                     enemies.append(enemy)
@@ -659,9 +659,9 @@ def main():
                     elif bonus.bonus_num == "trav_cert":
                         timer_trav_cert = 500
                     elif bonus.bonus_num == "ammo":
-                        timer_ammo = 500
+                        timer_ammo = 300
                     elif bonus.bonus_num == "freeze":
-                        timer_freeze = 300
+                        timer_freeze = 200
 
             for enemy in enemies[:]:
                 if timer_freeze <= 0:
@@ -725,7 +725,7 @@ def main():
                     elif bonus.bonus_num == "ammo":
                         timer_ammo = 300
                     elif bonus.bonus_num == "mask":
-                        timer_mask = 400
+                        timer_mask = 300
 
             if bossUS.health == 0:
                 level, animation = text_screen(level, story5_img, BG, bossUS.x, bossUS.y)
@@ -746,23 +746,23 @@ def main():
             #hero.hero_img = rocketHeroImage
             if len(enemies) == 0:
                 wave += 1
-                wave_length += 3
+                wave_length += 4
                 if wave < 3:
                     randBonus = random.choice(["freeze", "vaccine", "trav_cert", "ammo"])
                     bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1700, -1300), randBonus)
                     bonuses.append(bonus)
                 else:
                     randBonus = random.choice(["freeze", "vaccine", "trav_cert", "ammo"])
-                    bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-2100, -1800),
+                    bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-2100, -2000),
                                   randBonus)
                     bonuses.append(bonus)
                     randBonus = random.choice(["freeze", "vaccine", "trav_cert", "ammo"])
-                    bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1400, -1200),
+                    bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1400, -1300),
                                   randBonus)
                     bonuses.append(bonus)
                 for i in range(wave_length):
                     randVirus = random.choice(["red", "green", "blue", "purple"])
-                    enemy = Colorvirus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1500, -300),
+                    enemy = Colorvirus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1600, -300),
                                        randVirus,
                                        randVirus)
                     enemies.append(enemy)
@@ -777,9 +777,9 @@ def main():
                     elif bonus.bonus_num == "trav_cert":
                         timer_trav_cert = 500
                     elif bonus.bonus_num == "ammo":
-                        timer_ammo = 500
+                        timer_ammo = 300
                     elif bonus.bonus_num == "freeze":
-                        timer_freeze = 300
+                        timer_freeze = 200
 
             for enemy in enemies[:]:
                 if timer_freeze <= 0:
@@ -848,11 +848,10 @@ def main():
                     elif bonus.bonus_num == "ammo":
                         timer_ammo = 300
                     elif bonus.bonus_num == "mask":
-                        timer_mask = 400
+                        timer_mask = 300
 
             if pangolinBoss.health <= 0:
                 level, animation = text_screen(level, top1_img, BG, pangolinBoss.x, pangolinBoss.y)
-                pygame.mixer.music.load('covinv_docs/ofortuna.mp3')
         if level == 7:
             final_screen()
 
