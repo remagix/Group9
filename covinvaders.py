@@ -956,10 +956,13 @@ def text_screen(lvl, image, BG, x, y):
                 elif event.key == K_SPACE:
                     animation = False
                     lvl += 1
+                    return lvl, animation
+                elif event.key == K_LEFT or event.key == K_RIGHT or event.key == K_UP or event.key == K_DOWN:
+                    pass
                 else:
                     animation = True
                     lvl += 1
-                return lvl, animation
+                    return lvl, animation
     pygame.quit()
 
 def final_screen():
