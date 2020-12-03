@@ -193,7 +193,7 @@ class Boss(Character):
         self.bullet_img = None
         self.bullets = []
         self.maxhealth = 50
-        self.health = 50
+        #self.health = 50
         self.random_vel = random.choice([2, -2])
 
     def draw(self, window):
@@ -377,9 +377,9 @@ def collide(obj1, obj2):
 
 
 
-def main():
+def main(lvl, vague, hpbat, hpus, hppang):
     run = True
-    level = 0
+    level = lvl
     main_font = pygame.font.SysFont("timesnewroman", 20)
     lost_font = pygame.font.SysFont("timesnewroman", 30, bold=True)
     enemies = []
@@ -391,7 +391,7 @@ def main():
     timer_mask = 0
     timer_pangolin = 0
     timer_pangolin_def = 0
-    wave = 0
+    wave = vague
     virus_vel = 1
     bonus_vel = 2
     bullet_vel = 5
@@ -406,10 +406,14 @@ def main():
     pangolinBoss = Boss(200,0)
     pangolinBoss.bullet_img = pangbat_img
 
+    batBoss.health = hpbat
+    bossUS.health = hpus
+    pangolinBoss.health = hppang
+
     clock = pygame.time.Clock()
     lost = False
 
-    def stop():
+    def stop(restart):
         lost_label = lost_font.render("You have been infected", 1, (86, 189, 5))
         lost_label2 = lost_font.render("You lost (press key)", 1, (86, 189, 5))
 
@@ -431,8 +435,21 @@ def main():
                         quit()
                     else:
                         pygame.mixer.music.stop()
-                        main_start()
-                        break
+                        level = restart - 1
+                        if level == 2:
+                            batBoss.health = 0
+                            bossUS.health = 50
+                            pangolinBoss.health = 50
+                        elif level == 4:
+                            batBoss.health = 0
+                            bossUS.health = 0
+                            pangolinBoss.health = 50
+                        else:
+                            batBoss.health = 50
+                            bossUS.health = 50
+                            pangolinBoss.health = 50
+
+                        main(level, 5, batBoss.health, bossUS.health, pangolinBoss.health)
             pygame.init()
             pygame.display.update()
             clock.tick(15)
@@ -491,7 +508,7 @@ def main():
         if hero.lives <= 0:
             ahSound.play()
             lost = True
-            stop()
+            stop(level)
         if level == 0:
 
             pygame.mixer.music.stop()
@@ -557,8 +574,6 @@ def main():
                 pygame.mixer.music.load('covinv_docs/bowser_mario.mp3')
                 pygame.mixer.music.play(-1, 0, 0)
 
-                wave = 0
-                wave_length = 10
                 enemies = []
                 bonuses.clear()
                 hero.bullets.clear()
@@ -625,8 +640,9 @@ def main():
                 pygame.mixer.music.load('covinv_docs/jojo.mp3')
                 pygame.mixer.music.play(-1, 0, 0)
 
-                bossUS.health = 50
                 bonuses.clear()
+                wave = 0
+                wave_length = 10
                 hero.bullets.clear()
                 boss_cooldown = 0
                 hero.lives = 5
@@ -692,8 +708,6 @@ def main():
                 pygame.mixer.music.load('covinv_docs/Dragonforce.mp3')
                 pygame.mixer.music.play(-1, 0, 0)
 
-                wave = 0
-                wave_length = 10
                 enemies = []
                 bonuses.clear()
                 hero.bullets.clear()
@@ -750,7 +764,8 @@ def main():
                 pygame.mixer.music.load('covinv_docs/melee.mp3')
                 pygame.mixer.music.play(-1, 0, 0)
 
-                pangolinBoss.health = 50
+                wave = 0
+                wave_length = 10
                 bonuses.clear()
                 hero.bullets.clear()
                 boss_cooldown = 0
@@ -762,7 +777,6 @@ def main():
 
         if level == 5:
             BG = space_BG
-            #hero.hero_img = rocketHeroImage
             if len(enemies) == 0:
                 wave += 1
                 wave_length += 4
@@ -781,7 +795,7 @@ def main():
                     bonuses.append(bonus)
                 for i in range(wave_length):
                     randVirus = random.choice(["red", "green", "blue", "purple"])
-                    enemy = Colorvirus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1600, -300),
+                    enemy = Colorvirus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1400, -300),
                                        randVirus,
                                        randVirus)
                     enemies.append(enemy)
@@ -817,8 +831,7 @@ def main():
                 pygame.mixer.music.load('covinv_docs/ofortuna.mp3')
                 pygame.mixer.music.play(-1, 0, 0)
 
-                wave = 0
-                wave_length = 10
+
                 enemies = []
                 bonuses.clear()
                 hero.bullets.clear()
@@ -833,8 +846,6 @@ def main():
         if level == 6:
             boss_cooldown += 1
             BG = spacesun_BG
-
-
             if timer_pangolin <= 400:
                 timer_pangolin += 1
                 pangolinBoss.boss_img = pangolinImage
@@ -951,8 +962,7 @@ def text_screen(lvl, image, BG, x, y):
                 run = False
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
-                    animation = True
-                    run = False
+                    QUIT
                 elif event.key == K_SPACE:
                     animation = False
                     lvl += 1
@@ -1006,7 +1016,7 @@ def main_start():
                 if event.key == K_ESCAPE:
                     run = False
                 else:
-                    main()
+                    main(0, 0,50, 50, 50)
     pygame.quit()
 
 
