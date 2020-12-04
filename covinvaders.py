@@ -437,19 +437,19 @@ def main(lvl, vague, hpbat, hpus, hppang):
                         pygame.mixer.music.stop()
                         level = restart - 1
                         if level == 2:
-                            batBoss.health = 0
+                            batBoss.health = -1
                             bossUS.health = 50
                             pangolinBoss.health = 50
                         elif level == 4:
-                            batBoss.health = 0
-                            bossUS.health = 0
+                            batBoss.health = -1
+                            bossUS.health = -1
                             pangolinBoss.health = 50
                         else:
                             batBoss.health = 50
                             bossUS.health = 50
                             pangolinBoss.health = 50
 
-                        main(level, 5, batBoss.health, bossUS.health, pangolinBoss.health)
+                        main(level, 6, batBoss.health, bossUS.health, pangolinBoss.health)
             pygame.init()
             pygame.display.update()
             clock.tick(15)
@@ -513,10 +513,12 @@ def main(lvl, vague, hpbat, hpus, hppang):
 
             pygame.mixer.music.stop()
 
-            level,animation = text_screen(level, story1_img, explosionImage, -300, -300)
+            animation = text_screen(level, story1_img, explosionImage, -300, -300)
+            level += 1
 
             pygame.mixer.music.load('covinv_docs/jungle.mp3')
             pygame.mixer.music.play(-1, 115, 0)
+            wave = 0
 
         if level == 1:
             BG = jungle_BG
@@ -569,8 +571,10 @@ def main(lvl, vague, hpbat, hpus, hppang):
             if wave == 6:
                 pygame.mixer.music.stop()
 
-                level, animation = text_screen(level, story2_img, jungle_BG, -300, -300)
-
+                animation = text_screen(level, story2_img, jungle_BG, -300, -300)
+                wave += 1
+            if wave == 7:
+                level += 1
                 pygame.mixer.music.load('covinv_docs/bowser_mario.mp3')
                 pygame.mixer.music.play(-1, 0, 0)
 
@@ -631,12 +635,13 @@ def main(lvl, vague, hpbat, hpus, hppang):
                     elif bonus.bonus_num == "mask":
                         timer_mask = 300
 
-            if batBoss.health <= 0:
+            if batBoss.health == 0:
                 ahSound.play()
                 pygame.mixer.music.stop()
-
-                level , animation = text_screen(level, story3_img, BG, batBoss.x, batBoss.y)
-
+                animation = text_screen(level, story3_img, BG, batBoss.x, batBoss.y)
+                batBoss.health = -1
+            if batBoss.health == -1:
+                level +=1
                 pygame.mixer.music.load('covinv_docs/jojo.mp3')
                 pygame.mixer.music.play(-1, 0, 0)
 
@@ -703,8 +708,10 @@ def main(lvl, vague, hpbat, hpus, hppang):
             if wave == 6:
                 pygame.mixer.music.stop()
 
-                level, animation = text_screen(level, story4_img, BG, -300, -300)
-
+                animation = text_screen(level, story4_img, BG, -300, -300)
+                wave += 1
+            if wave == 7:
+                level += 1
                 pygame.mixer.music.load('covinv_docs/Dragonforce.mp3')
                 pygame.mixer.music.play(-1, 0, 0)
 
@@ -760,7 +767,10 @@ def main(lvl, vague, hpbat, hpus, hppang):
 
                 pygame.mixer.music.stop()
 
-                level, animation = text_screen(level, story5_img, BG, bossUS.x, bossUS.y)
+                animation = text_screen(level, story5_img, BG, bossUS.x, bossUS.y)
+                bossUS.health = -1
+            if bossUS.health == -1:
+                level += 1
                 pygame.mixer.music.load('covinv_docs/melee.mp3')
                 pygame.mixer.music.play(-1, 0, 0)
 
@@ -826,8 +836,10 @@ def main(lvl, vague, hpbat, hpus, hppang):
             if wave == 6:
                 pygame.mixer.music.stop()
 
-                level, animation = text_screen(level, story6_img, BG, -300, -300)
-
+                animation = text_screen(level, story6_img, BG, -300, -300)
+                wave += 1
+            if wave == 7:
+                level += 1
                 pygame.mixer.music.load('covinv_docs/ofortuna.mp3')
                 pygame.mixer.music.play(-1, 0, 0)
 
@@ -884,7 +896,7 @@ def main(lvl, vague, hpbat, hpus, hppang):
 
             if pangolinBoss.health <= 0:
                 ahSound.play()
-                level, animation = text_screen(level, top1_img, BG, pangolinBoss.x, pangolinBoss.y)
+                animation = text_screen(level, top1_img, BG, pangolinBoss.x, pangolinBoss.y)
         if level == 7:
             final_screen()
 
@@ -965,14 +977,12 @@ def text_screen(lvl, image, BG, x, y):
                     QUIT
                 elif event.key == K_SPACE:
                     animation = False
-                    lvl += 1
-                    return lvl, animation
+                    return animation
                 elif event.key == K_LEFT or event.key == K_RIGHT or event.key == K_UP or event.key == K_DOWN:
                     pass
                 else:
                     animation = True
-                    lvl += 1
-                    return lvl, animation
+                    return animation
     pygame.quit()
 
 def final_screen():
@@ -1021,3 +1031,4 @@ def main_start():
 
 
 main_start()
+
