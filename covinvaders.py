@@ -38,7 +38,7 @@ heroImage = pygame.transform.scale(pygame.image.load('covinv_docs/BackHero.PNG')
 
 rocketHeroImage = pygame.transform.scale(pygame.image.load('covinv_docs/rocket.png'), (70, 90))
 
-invincibleHeroImage = pygame.transform.scale(pygame.image.load('covinv_docs/invincible.png'), (70, 90))
+invincibleHeroImage = pygame.transform.scale(pygame.image.load('covinv_docs/Shieldhero.PNG'), (70, 90))
 
 batBossImage = pygame.transform.scale(pygame.image.load('covinv_docs/pngegg.png'),
                                       (200, 140))
@@ -1019,7 +1019,7 @@ def main_start():
                 if event.key == K_ESCAPE:
                     run = False
                 else:
-                    main(0, 0,50, 50, 50)
+                    main(2, 0,50, 50, 50)
     pygame.quit()
 
 
