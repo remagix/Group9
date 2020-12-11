@@ -40,6 +40,9 @@ rocketHeroImage = pygame.transform.scale(pygame.image.load('covinv_docs/rocket.p
 
 invincibleHeroImage = pygame.transform.scale(pygame.image.load('covinv_docs/Shieldhero.PNG'), (70, 90))
 
+invincibleRocketImage = pygame.transform.scale(pygame.image.load('covinv_docs/rocketshield.png'), (70, 90))
+
+
 batBossImage = pygame.transform.scale(pygame.image.load('covinv_docs/pngegg.png'),
                                       (200, 140))
 
@@ -372,6 +375,7 @@ def collide(obj1, obj2):
 def main(lvl, vague, hpbat, hpus, hppang):
     run = True
     level = lvl
+    animation = False
     main_font = pygame.font.SysFont("timesnewroman", 20)
     lost_font = pygame.font.SysFont("timesnewroman", 30, bold=True)
     enemies = []
@@ -450,9 +454,9 @@ def main(lvl, vague, hpbat, hpus, hppang):
         WINDOW.blit(BG, (0, 0))
         pygame.draw.line(WINDOW, (255, 0, 0), (0, 450), (600, 450), 3)
         # draw text
-        lives_label = main_font.render(f"Lives: {hero.lives}", 1, (255, 0, 255))
-        level_label = main_font.render(f"Level: {level}", 1, (255, 255, 255))
-        wave_label = main_font.render(f"Wave: {wave}", 1, (255, 255, 255))
+        lives_label = main_font.render(f"Vies: {hero.lives}", 1, (255, 0, 255))
+        level_label = main_font.render(f"Niveau: {level}", 1, (255, 255, 255))
+        wave_label = main_font.render(f"Vague: {wave}", 1, (255, 255, 255))
 
         WINDOW.blit(lives_label, (10, 10))
         WINDOW.blit(level_label, (WINDOW_WIDTH - level_label.get_width() - 10, 10))
@@ -489,7 +493,10 @@ def main(lvl, vague, hpbat, hpus, hppang):
         else:
             invincible = True
             timer_mask -= 1
-            hero.hero_img = invincibleHeroImage
+            if level == 6:
+                hero.hero_img = invincibleRocketImage
+            else:
+                hero.hero_img = invincibleHeroImage
 
         if timer_trav_cert <= 0:
             hero_vel = 5
@@ -601,7 +608,7 @@ def main(lvl, vague, hpbat, hpus, hppang):
                 bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), -100, randBonus)
                 bonuses.append(bonus)
             batBoss.move_bullets_batBoss(-bullet_vel, hero, invincible)
-            hero.move_bullets_vs_boss(-bullet_vel, batBoss, 0.75)
+            hero.move_bullets_vs_boss(-bullet_vel, batBoss, 25)
 
             for minibat in enemies[:]:
                 minibat.move(bonus_vel)
@@ -781,7 +788,7 @@ def main(lvl, vague, hpbat, hpus, hppang):
             BG = space_BG
             if len(enemies) == 0:
                 wave += 1
-                wave_length += 4
+                wave_length += 3
                 if wave < 3:
                     randBonus = random.choice(["freeze", "vaccine", "trav_cert", "ammo"])
                     bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1700, -1300), randBonus)
@@ -1019,7 +1026,7 @@ def main_start():
                 if event.key == K_ESCAPE:
                     run = False
                 else:
-                    main(2, 0,50, 50, 50)
+                    main(0, 0,50, 50, 50)
     pygame.quit()
 
 
