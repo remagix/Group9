@@ -1,10 +1,7 @@
-import pygame
-import time
-import random
-import os
+
 import pygame
 import random
-import sys
+
 from pygame.locals import *
 
 
@@ -35,13 +32,9 @@ dynamiteUS_img = pygame.transform.scale(pygame.image.load('covinv_docs/dynamite.
 nukeUS_img = pygame.transform.scale(pygame.image.load('covinv_docs/nukeUS.png'), (80, 80))
 minibat_img = pygame.transform.scale(pygame.image.load('covinv_docs/pngegg.png'), (80, 56))
 
-HP_RED = 1
-HP_GREEN = 2
-HP_BLUE = 3
-HP_PURPLE = 4
+herowin = pygame.transform.scale(pygame.image.load('covinv_docs/FrontHero.PNG'), (150, 250))
 
-
-heroImage = pygame.transform.scale(pygame.image.load('covinv_docs/samus.png'), (70, 90))
+heroImage = pygame.transform.scale(pygame.image.load('covinv_docs/BackHero.PNG'), (70, 90))
 
 rocketHeroImage = pygame.transform.scale(pygame.image.load('covinv_docs/rocket.png'), (70, 90))
 
@@ -103,6 +96,11 @@ top1_img = pygame.transform.scale(pygame.image.load('covinv_docs/victory_royale.
 
 ahSound = pygame.mixer.Sound('covinv_docs/scream.wav')
 waterSound = pygame.mixer.Sound('covinv_docs/water.wav')
+
+HP_RED = 1
+HP_GREEN = 2
+HP_BLUE = 3
+HP_PURPLE = 4
 
 class Falling:
     def __init__(self, x, y):
@@ -174,12 +172,6 @@ class Character:
         self.mask = None
         self.bullets = []
         self.bullet_img = None
-
-    # def shoot
-    # def move_bullets
-
-    # def draw
-
     def update(self):
         pygame.event.pump()
 
@@ -321,7 +313,7 @@ class Hero(Character):
                     self.bullets.remove(bullet)
 
     def shoot(self):
-        standard_ammo = Bullet(self.x + 8, self.y - 20, self.bullet_img)
+        standard_ammo = Bullet(self.x + 23, self.y - 20, self.bullet_img)
         self.bullets.append(standard_ammo)
 
 
@@ -414,8 +406,8 @@ def main(lvl, vague, hpbat, hpus, hppang):
     lost = False
 
     def stop(restart):
-        lost_label = lost_font.render("You have been infected", 1, (86, 189, 5))
-        lost_label2 = lost_font.render("You lost (press key)", 1, (86, 189, 5))
+        lost_label = lost_font.render("Vous avez été infecté", 1, (86, 189, 5))
+        lost_label2 = lost_font.render("Vous avez perdu (appuyez sur une touche)", 1, (86, 189, 5))
 
         WINDOW.blit(lost_label, (WINDOW_WIDTH / 2 - lost_label.get_width() / 2, 260))
         WINDOW.blit(lost_label2, (WINDOW_WIDTH / 2 - lost_label2.get_width() / 2, 300))
@@ -955,13 +947,14 @@ def text_screen(lvl, image, BG, x, y):
         timer_explosion = 1000
     run = True
     clear_font = pygame.font.SysFont("timesnewroman", 30, bold=True)
-    clear_label = clear_font.render("Level clear", 1, (255,255,255))
+    clear_label = clear_font.render("Niveau terminé", 1, (255,255,255))
     mac_font = pygame.font.SysFont("timesnewroman", 20, bold=True)
     mac_label = mac_font.render("Si vous jouez sur un mac, pressez la barre espace", 1, (255, 255, 255))
     while run:
         while timer_explosion > 0:
             WINDOW.blit(BG, (0,0))
             WINDOW.blit(explosionImage, (x,y))
+            WINDOW.blit(herowin,(225,320))
             WINDOW.blit(clear_label, (WINDOW_WIDTH / 2 - clear_label.get_width() / 2, 280))
             pygame.display.update()
             timer_explosion -= 1
