@@ -563,6 +563,7 @@ def main(lvl, vague, hpbat, hpus, hppang):
                     enemies.remove(enemy)
             timer_freeze -= 1
             if wave == 6:
+                victorySound.play()
                 pygame.mixer.music.stop()
                 pygame.mixer.music.load('covinv_docs/txt_screen.mp3')
                 pygame.mixer.music.play(-1, 0, 0)
@@ -704,6 +705,7 @@ def main(lvl, vague, hpbat, hpus, hppang):
                     enemies.remove(enemy)
             timer_freeze -= 1
             if wave == 6:
+                victorySound.play()
                 pygame.mixer.music.stop()
                 pygame.mixer.music.load('covinv_docs/txt_screen.mp3')
                 pygame.mixer.music.play(-1, 0, 0)
@@ -835,6 +837,7 @@ def main(lvl, vague, hpbat, hpus, hppang):
                     enemies.remove(enemy)
             timer_freeze -= 1
             if wave == 6:
+                victorySound.play()
                 pygame.mixer.music.stop()
                 pygame.mixer.music.load('covinv_docs/txt_screen.mp3')
                 pygame.mixer.music.play(-1, 0, 0)
