@@ -447,8 +447,8 @@ def main(lvl, vague, hpbat, hpus, hppang):
 
     def redraw_window():
         WINDOW.blit(BG, (0, 0))
-        pygame.draw.line(WINDOW, (255, 0, 0), (0, 450), (600, 450), 3)
-        # draw text
+        if level % 2 == 1:
+            pygame.draw.line(WINDOW, (255, 0, 0), (0, 450), (600, 450), 3)        # draw text
         lives_label = main_font.render(f"Vies: {hero.lives}", 1, (255, 0, 255))
         level_label = main_font.render(f"Niveau: {level}", 1, (255, 255, 255))
         wave_label = main_font.render(f"Vague: {wave}", 1, (255, 255, 255))
