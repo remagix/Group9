@@ -1,16 +1,26 @@
+#les imports de base qu'il nous faut pour que notre jeu fonctionne
 import pygame
 import random
-
 from pygame.locals import *
 
+#initialiser pygame
 pygame.font.init()
-pygame.mixer.init()
+pygame.mixer.init() # ajouté juste pour etre sur
 
+#on définit les constantes
 FPS = 60
 WINDOW_HEIGHT = 600
 WINDOW_WIDTH = 600
 WINDOW = pygame.display.set_mode((WINDOW_HEIGHT, WINDOW_WIDTH))
+HP_RED = 1
+HP_GREEN = 2
+HP_BLUE = 3
+HP_PURPLE = 4
+
+#nom de la fenetre de jeu
 pygame.display.set_caption("Convinvaders : Revenge of The Pangolin")
+
+#on upload les images qu'on va utiliser, et les sons/musiques
 
 redVirusImage = pygame.transform.scale(pygame.image.load('covinv_docs/red_virus.png'), (50, 50))
 greenVirusImage = pygame.transform.scale(pygame.image.load('covinv_docs/green_virus.png'), (50, 50))
@@ -94,12 +104,7 @@ victorySound = pygame.mixer.Sound('covinv_docs/lvl_win.wav')
 boomSound = pygame.mixer.Sound('covinv_docs/boom.wav')
 
 
-HP_RED = 1
-HP_GREEN = 2
-HP_BLUE = 3
-HP_PURPLE = 4
-
-
+#classe abstraite regroupant les objets qui tombent du haut de l'écran
 class Falling:
     def __init__(self, x, y):
         self.x = x
@@ -118,7 +123,7 @@ class Falling:
     def touches(self, hero):
         return collide(self, hero)
 
-
+#classe abstraite Virus, désignant les virus dans leur globalité
 class Virus(Falling):
 
     def __init__(self, x, y):
@@ -129,7 +134,7 @@ class Virus(Falling):
     def draw(self, window):
         window.blit(self.virus_img, (self.x, self.y))
 
-
+#classe Bullet qui sert à créer les balles des personnages qui peuvent tirer
 class Bullet:
 
     def __init__(self, x, y, img):
@@ -160,6 +165,7 @@ class Bullet:
             self.random_direction = -self.random_direction
 
 
+#classe abstraite regroupant tous les personnages du jeu
 class Character:
 
     def __init__(self, x, y):
@@ -175,6 +181,7 @@ class Character:
         pygame.event.pump()
 
 
+#classe permettant de modéliser un boss
 class Boss(Character):
 
     def __init__(self, x, y):
@@ -184,7 +191,7 @@ class Boss(Character):
         self.bullet_img = None
         self.bullets = []
         self.maxhealth = 50
-        # self.health = 50
+        self.health = 50
         self.random_vel = random.choice([2, -2])
 
     def draw(self, window):
@@ -193,6 +200,7 @@ class Boss(Character):
         for bullet in self.bullets:
             bullet.draw(window)
 
+    #trajectoire spécifique des missiles du boss super-infecté
     def move_bullets_BossUS(self, vel, hero, invincible):
         for bullet in self.bullets:
             bullet.move(-vel)
@@ -206,6 +214,7 @@ class Boss(Character):
                     if bullet in self.bullets:
                         self.bullets.remove(bullet)
 
+    #trajectoire spécifique des missiles du boss pangoline
     def move_bullets_pangolin(self, vel, hero, invincible):
         for bullet in self.bullets:
             bullet.move_pangolin(-vel)
@@ -219,6 +228,7 @@ class Boss(Character):
                     if bullet in self.bullets:
                         self.bullets.remove(bullet)
 
+    #trajectoire spécifique des missiles du boss chauve-souris
     def move_bullets_batBoss(self, vel, hero, invincible):
         for bullet in self.bullets:
             bullet.move(-vel)
@@ -236,15 +246,18 @@ class Boss(Character):
         pygame.draw.rect(window, (255, 0, 0), (self.x + 50, self.y, 100, 8))
         pygame.draw.rect(window, (0, 255, 0), (self.x + 50, self.y, (100) * self.health / self.maxhealth, 8))
 
+    #fonction modélisant le tir du boss super-infecté
     def shoot_BossUS(self):
         boss_ammo = Bullet(random.choice([self.x, self.x + 150]), self.y - 100 + self.boss_img.get_height(),
                            self.bullet_img)
         self.bullets.append(boss_ammo)
 
+    #fonction modélisant le tir du boss pangolin
     def shoot_Pangolin(self):
         boss_ammo = Bullet(self.x + self.boss_img.get_width() / 2 - 40, self.y + 100, self.bullet_img)
         self.bullets.append(boss_ammo)
 
+    #mouvements des boss
     def move(self, vel):
         if self.x <= 0:
             self.x += vel
@@ -271,6 +284,7 @@ class Boss(Character):
             self.random_vel = -vel
 
 
+#classe permettant de créer notre héros
 class Hero(Character):
 
     def __init__(self, x, y):
@@ -286,6 +300,8 @@ class Hero(Character):
         for bullet in self.bullets:
             bullet.draw(window)
 
+    #fonction modélisant les impacts des balles du héros:
+    #soit elles touchent les virus, soit elles disparaissent à la limite de l'écran
     def move_bullets(self, vel, objs):
         for bullet in self.bullets:
             bullet.move(vel)
@@ -302,6 +318,8 @@ class Hero(Character):
                         if bullet in self.bullets:
                             self.bullets.remove(bullet)
 
+    #fonction modélisant les impacts des balles du héros:
+    #soit elles touchent les boss, soit elles disparaissent à la limite de l'écran
     def move_bullets_vs_boss(self, vel, boss, dmg):
         for bullet in self.bullets:
             bullet.move(vel)
@@ -313,11 +331,12 @@ class Hero(Character):
                         boss.health -= dmg
                     self.bullets.remove(bullet)
 
+    #fonction modélisant le tir du héros
     def shoot(self):
         standard_ammo = Bullet(self.x + 23, self.y - 20, self.bullet_img)
         self.bullets.append(standard_ammo)
 
-
+#classe modélisant les virus, avec une image, une couleur et des points de vie associés à chaque espèce de virus
 class Colorvirus(Virus):
 
     def __init__(self, x, y, color, hp):
@@ -342,7 +361,7 @@ class Colorvirus(Virus):
         "minibat": 2
     }
 
-
+#classe modélisant un bonus, avec une image associée à chaque sorte
 class Bonus(Falling):
     Bonus_List = {
         "mask": maskImage,
@@ -361,7 +380,7 @@ class Bonus(Falling):
     def draw(self, window):
         window.blit(self.bonus_img, (self.x, self.y))
 
-
+#fonction permet de détecter une collision d'objets du jeu en détectant les chevauchements de leur masque
 def collide(obj1, obj2):
     diff_x = int(obj2.x - obj1.x)
     diff_y = int(obj2.y - obj1.y)
@@ -371,24 +390,28 @@ def collide(obj1, obj2):
 def main(lvl, vague, hpbat, hpus, hppang):
     run = True
     level = lvl
-    animation = False
+    animation = False #boolean permettant d'indiquer au programme si il doit lancer l'animation du pangolin au prochain niveau
     main_font = pygame.font.SysFont("timesnewroman", 20)
     lost_font = pygame.font.SysFont("timesnewroman", 30, bold=True)
     enemies = []
     bonuses = []
     wave_length = 10
+
+    #différents timers
     timer_trav_cert = 0
     timer_ammo = 0
     timer_freeze = 0
     timer_mask = 0
     timer_pangolin = 0
     timer_pangolin_def = 0
+
     wave = vague
     virus_vel = 1
     bonus_vel = 2
     bullet_vel = 5
     boss_vel = 2
 
+    #création des personnages
     hero = Hero(300, 500)
     batBoss = Boss(200, 0)
     batBoss.bullet_img = batredfire_img
@@ -404,6 +427,7 @@ def main(lvl, vague, hpbat, hpus, hppang):
     clock = pygame.time.Clock()
     lost = False
 
+    #fonction permettant de gérer les cas ou le joueur perd (recommencer le niveau ou quitter)
     def stop(restart):
         lost_label = lost_font.render("Vous avez été infecté", 1, (86, 189, 5))
         lost_label2 = lost_font.render("Vous avez perdu (appuyez sur une touche)", 1, (86, 189, 5))
@@ -445,10 +469,11 @@ def main(lvl, vague, hpbat, hpus, hppang):
             pygame.display.update()
             clock.tick(15)
 
+    #fonction qui permet de dessiner en continu les élements nécessaires du jeu à l'écran, au bon moment
     def redraw_window():
         WINDOW.blit(BG, (0, 0))
         if level % 2 == 1:
-            pygame.draw.line(WINDOW, (255, 0, 0), (0, 450), (600, 450), 3)        # draw text
+            pygame.draw.line(WINDOW, (255, 0, 0), (0, 450), (600, 450), 3)  #limite que les virus ne doivent pas franchir
         lives_label = main_font.render(f"Vies: {hero.lives}", 1, (255, 0, 255))
         level_label = main_font.render(f"Niveau: {level}", 1, (255, 255, 255))
         wave_label = main_font.render(f"Vague: {wave}", 1, (255, 255, 255))
@@ -473,8 +498,11 @@ def main(lvl, vague, hpbat, hpus, hppang):
             pangolinBoss.draw(WINDOW)
         pygame.display.update()
 
+
+    #définition et initialisation des cooldown pour le héros et le boss
     hero_cooldown = 0
     boss_cooldown = 0
+
     while run:
         hero_cooldown += 1
         clock.tick(FPS)
@@ -507,13 +535,14 @@ def main(lvl, vague, hpbat, hpus, hppang):
 
             pygame.mixer.music.load('covinv_docs/txt_screen.mp3')
             pygame.mixer.music.play(-1, 0, 0)
+
             animation = text_screen(level, story1_img, explosionImage, -300, -300)
             level += 1
 
             pygame.mixer.music.load('covinv_docs/jungle.mp3')
-            pygame.mixer.music.play(-1, 115, 0)
-            wave = 0
+            pygame.mixer.music.play(-1, 115, 0) #commence la musique à 1m55sec directement, assez pratique
 
+            wave = 0
         if level == 1:
             BG = jungle_BG
             if len(enemies) == 0:
@@ -732,7 +761,7 @@ def main(lvl, vague, hpbat, hpus, hppang):
             if bossUS.health > 25:
                 bossUS.boss_img = bossUSImage
                 bossUS.move(boss_vel)
-                if boss_cooldown % 50 == 0:
+                if boss_cooldown % 50 == 0: #cooldown du boss, qui est l'intervalle de temps entre chaque tir de missile
                     bossUS.shoot_BossUS()
             else:
                 bossUS.boss_img = angryBossUSImage
@@ -856,7 +885,7 @@ def main(lvl, vague, hpbat, hpus, hppang):
                 timer_ammo = 0
                 timer_freeze = 0
                 timer_mask = 0
-                if animation:
+                if animation: #si le boolean animation est True à ce moment du jeu, cela indique que c'est le moment du niveau final
                     pangolin_arriving()
 
         if level == 6:
@@ -877,7 +906,7 @@ def main(lvl, vague, hpbat, hpus, hppang):
                     timer_pangolin = 0
                     timer_pangolin_def = 0
 
-            if boss_cooldown % 650 == 0:
+            if boss_cooldown % 650 == 0: #intervalle de temps entre les apparitions de bonus, en fonction du cooldown du boss
                 randBonus = random.choice(["ammo", "trav_cert", "vaccine", "mask"])
                 bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), -100, randBonus)
                 bonuses.append(bonus)
@@ -926,6 +955,7 @@ def main(lvl, vague, hpbat, hpus, hppang):
                 hero.shoot()
                 timer_ammo -= 10
 
+        #ce sont les touches à actionner pour faire bouger le héros
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] and hero.x - 5 > 0:
             hero.x -= hero_vel
@@ -940,7 +970,7 @@ def main(lvl, vague, hpbat, hpus, hppang):
 
         redraw_window()
 
-
+#fonction implémentée pour l'entrée en scène épique du boss final (pangolin)
 def pangolin_arriving():
     timer_pangolin_arriving = 16320
     run = True
@@ -960,7 +990,7 @@ def pangolin_arriving():
         if timer_pangolin_arriving <= 0:
             run = False
 
-
+#fonction permettant la gestion des écrans de passage entre niveaux
 def text_screen(lvl, image, BG, x, y):
     pygame.init()
     if lvl == 0:
@@ -1001,7 +1031,7 @@ def text_screen(lvl, image, BG, x, y):
                     return animation
     pygame.quit()
 
-
+#fonction qui gère l'écran final du jeu, en cas de victoire du joueur contre le pangolin
 def final_screen():
     run = True
     final_font = pygame.font.SysFont("timesnewroman", 20, bold=True)
@@ -1027,7 +1057,7 @@ def final_screen():
 
     pygame.quit()
 
-
+#fonction qui appelle le main, faisant office de page de démarrage du jeu
 def main_start():
     pygame.init()
     run = True
