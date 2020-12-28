@@ -386,7 +386,7 @@ def collide(obj1, obj2):
     diff_y = int(obj2.y - obj1.y)
     return obj1.mask.overlap(obj2.mask, (diff_x, diff_y)) is not None
 
-
+#fonction main, fonction principale qui execute le programme
 def main(lvl, vague, hpbat, hpus, hppang):
     run = True
     level = lvl
