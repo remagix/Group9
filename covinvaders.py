@@ -534,7 +534,7 @@ def main(lvl, vague, hpbat, hpus, hppang):
         if level == 0:
 
             pygame.mixer.music.load('covinv_docs/txt_screen.mp3')
-            pygame.mixer.music.play(-1, 0, 0)
+            pygame.mixer.music.play(-1, 10, 0)
 
             animation = text_screen(level, story1_img, explosionImage, -300, -300)
             level += 1
@@ -595,7 +595,7 @@ def main(lvl, vague, hpbat, hpus, hppang):
                 victorySound.play()
                 pygame.mixer.music.stop()
                 pygame.mixer.music.load('covinv_docs/txt_screen.mp3')
-                pygame.mixer.music.play(-1, 0, 0)
+                pygame.mixer.music.play(-1, 10, 0)
                 animation = text_screen(level, story2_img, jungle_BG, -300, -300)
                 wave += 1
             if wave == 7:
@@ -634,7 +634,7 @@ def main(lvl, vague, hpbat, hpus, hppang):
                 bonus = Bonus(random.randrange(50, WINDOW_WIDTH - 100), -100, randBonus)
                 bonuses.append(bonus)
             batBoss.move_bullets_batBoss(-bullet_vel, hero, invincible)
-            hero.move_bullets_vs_boss(-bullet_vel, batBoss, 25)
+            hero.move_bullets_vs_boss(-bullet_vel, batBoss, 0.75)
 
             for minibat in enemies[:]:
                 minibat.move(bonus_vel)
@@ -659,13 +659,13 @@ def main(lvl, vague, hpbat, hpus, hppang):
                     elif bonus.bonus_num == "mask":
                         timer_mask = 300
 
-            if batBoss.health == 0:
+            if batBoss.health == -0.25:
                 pygame.mixer.music.stop()
                 boomSound.play()
                 ahSound.play()
                 victorySound.play()
-                pygame.mixer.music.load('covinv_docs/txt_screen.mp3')
-                pygame.mixer.music.play(-1, 0, 0)
+                pygame.mixer.music.load('covinv_docs/txt_screen.mp3',)
+                pygame.mixer.music.play(-1, 10, 0)
                 animation = text_screen(level, story3_img, BG, batBoss.x, batBoss.y)
                 batBoss.health = -1
             if batBoss.health == -1:
@@ -737,7 +737,7 @@ def main(lvl, vague, hpbat, hpus, hppang):
                 victorySound.play()
                 pygame.mixer.music.stop()
                 pygame.mixer.music.load('covinv_docs/txt_screen.mp3')
-                pygame.mixer.music.play(-1, 0, 0)
+                pygame.mixer.music.play(-1, 10, 0)
                 animation = text_screen(level, story4_img, BG, -300, -300)
                 wave += 1
             if wave == 7:
@@ -798,7 +798,7 @@ def main(lvl, vague, hpbat, hpus, hppang):
                 ahSound.play()
                 victorySound.play()
                 pygame.mixer.music.load('covinv_docs/txt_screen.mp3')
-                pygame.mixer.music.play(-1, 0, 0)
+                pygame.mixer.music.play(-1, 10, 0)
                 animation = text_screen(level, story5_img, BG, bossUS.x, bossUS.y)
                 bossUS.health = -1
             if bossUS.health == -1:
@@ -838,8 +838,7 @@ def main(lvl, vague, hpbat, hpus, hppang):
                 for i in range(wave_length):
                     randVirus = random.choice(["red", "green", "blue", "purple"])
                     enemy = Colorvirus(random.randrange(50, WINDOW_WIDTH - 100), random.randrange(-1400, -300),
-                                       randVirus,
-                                       randVirus)
+                                       randVirus,randVirus)
                     enemies.append(enemy)
 
             for bonus in bonuses[:]:
@@ -869,7 +868,7 @@ def main(lvl, vague, hpbat, hpus, hppang):
                 victorySound.play()
                 pygame.mixer.music.stop()
                 pygame.mixer.music.load('covinv_docs/txt_screen.mp3')
-                pygame.mixer.music.play(-1, 0, 0)
+                pygame.mixer.music.play(-1, 10, 0)
                 animation = text_screen(level, story6_img, BG, -300, -300)
                 wave += 1
             if wave == 7:
@@ -933,7 +932,7 @@ def main(lvl, vague, hpbat, hpus, hppang):
                 ahSound.play()
                 victorySound.play()
                 pygame.mixer.music.load('covinv_docs/txt_screen.mp3')
-                pygame.mixer.music.play(-1, 0, 0)
+                pygame.mixer.music.play(-1, 10, 0)
                 animation = text_screen(level, top1_img, BG, pangolinBoss.x, pangolinBoss.y)
                 level += 1
                 pygame.mixer.music.stop()
